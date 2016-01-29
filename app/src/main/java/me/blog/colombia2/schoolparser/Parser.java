@@ -10,6 +10,7 @@ import net.htmlparser.jericho.*;
 public class Parser {
     public interface onParseFinishListener {
         public void onFinish(ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
+        public void onInternetError();
     }
     
     private static String ORGIN_URL = "http://cw.hs.kr";
@@ -80,6 +81,7 @@ public class Parser {
                     e.printStackTrace();
                 } catch(IOException e) {
                     e.printStackTrace();
+                    Parser.this.listener.onInternetError();
                 }
             }
         }).start();

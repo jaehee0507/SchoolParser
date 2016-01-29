@@ -13,6 +13,7 @@ public class MainActivity extends Activity  {
     private Parser parser;
     private ListView listView;
     private Button refresh;
+    private TextView interneterr;
     private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent i) {
@@ -26,6 +27,7 @@ public class MainActivity extends Activity  {
         setContentView(R.layout.main);
         
         listView = (ListView) findViewById(R.id.listview);
+        interneterr = (TextView) findViewById(R.id.interneterr);
         refresh = (Button) findViewById(R.id.refresh);
         refresh.setClickable(false);
         refresh.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +36,7 @@ public class MainActivity extends Activity  {
                 listView.setAdapter(null);
                 parser.start();
                 refresh.setClickable(false);
+                interneterr.setVisibility(View.GONE);
             }
         });
         
@@ -44,6 +47,7 @@ public class MainActivity extends Activity  {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                interneterr.setVisibility(View.GONE);
                                 refresh.setClickable(true);
                                 
                                 CustomAdapter adapter = new CustomAdapter(MainActivity.this, R.layout.list_layout, list, files);
@@ -57,6 +61,17 @@ public class MainActivity extends Activity  {
                                         startActivity(it);
                                     }
                                 });
+                            }
+                        });
+                    }
+                    
+                    @Override
+                    public void onInternetError() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                interneterr.setVisibility(View.VISIBLE);
+                                refresh.setClickable(true);
                             }
                         });
                     }

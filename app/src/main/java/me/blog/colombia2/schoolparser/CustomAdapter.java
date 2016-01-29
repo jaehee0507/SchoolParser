@@ -9,6 +9,7 @@ import android.net.*;
 import android.graphics.*;
 import android.os.*;
 import java.util.*;
+import java.io.*;
 
 public class CustomAdapter extends BaseAdapter {
     private MainActivity activity;
@@ -100,11 +101,11 @@ public class CustomAdapter extends BaseAdapter {
                     DownloadManager.Request request;
                     
                     Uri uri = Uri.parse(arr[1]);
-                    List<String> pathSegments = uri.getPathSegments();
+                    String filename = arr[0].substring(0, arr[0].lastIndexOf("("));
                     request = new DownloadManager.Request(uri);
-                    request.setTitle(arr[0]);
-                    request.setDescription(arr[0]);
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, pathSegments.get(pathSegments.size()-1));
+                    request.setTitle(filename);
+                    request.setDescription(filename);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
                     downloadManager.enqueue(request);
                     

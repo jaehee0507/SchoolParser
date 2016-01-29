@@ -13,6 +13,12 @@ public class MainActivity extends Activity  {
     private Parser parser;
     private ListView listView;
     private Button refresh;
+    private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context ctx, Intent i) {
+            Toast.makeText(ctx, "/sdcard/Download/에 다운로드가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,5 +62,18 @@ public class MainActivity extends Activity  {
                     }
                 });
         parser.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter iFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        registerReceiver(completeReceiver, iFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(completeReceiver);
     }
 }

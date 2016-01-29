@@ -7,6 +7,7 @@ import android.view.*;
 import android.util.*;
 import android.net.*;
 import android.graphics.*;
+import android.os.*;
 import java.util.*;
 
 public class CustomAdapter extends BaseAdapter {
@@ -95,9 +96,19 @@ public class CustomAdapter extends BaseAdapter {
             download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    DownloadManager downloadManager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager.Request request;
+                    
                     Uri uri = Uri.parse(arr[1]);
-                    Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                    activity.startActivity(it);
+                    List<String> pathSegments = uri.getPathSegments();
+                    request = new DownloadManager.Request(uri);
+                    request.setTitle(arr[0]);
+                    request.setDescription(arr[0]);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, pathSegments.get(pathSegments.size()-1));
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
+                    downloadManager.enqueue(request);
+                    
+                    
                 }
             });
             l.addView(download);

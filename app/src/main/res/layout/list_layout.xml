@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+	android:gravity="center"
+    android:orientation="horizontal">
+	
+	<LinearLayout
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
+		
+		<TextView
+			android:id="@+id/title"
+			android:layout_width="match_parent"
+			android:layout_height="36dp"
+			android:paddingLeft="8dp"
+			android:textColor="#000000"
+			android:gravity="left|center"
+			android:singleLine="true"
+			android:textSize="18dp"/>
+		
+		<TextView
+			android:id="@+id/date"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="8dp"
+			android:textColor="#707070"
+			android:gravity="left|center"
+			android:singleLine="true"
+			android:textSize="8dp"/>
+	
+	</LinearLayout>
+	
+	<View
+		android:layout_width="1dp"
+		android:layout_height="30dp"
+		android:background="#a0a0a0"/>
+	
+	<RelativeLayout
+		android:layout_width="48dp"
+		android:layout_height="match_parent">
+		
+		<ImageView
+			android:src="@drawable/ic_attachment_black"
+			android:padding="8dp"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"/>
+		
+		<Button
+			android:id="@+id/files"
+			android:background="#00000000"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:gravity="center|bottom"
+			android:text="첨부파일"
+			android:textSize="8dp"
+			android:singleLine="true"
+			android:textColor="#707070"/>
+	
+	</RelativeLayout>
+    
+</LinearLayout>

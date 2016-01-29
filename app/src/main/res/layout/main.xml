@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:orientation="vertical"
+    android:gravity="center|top">
+	
+	<Button
+		android:id="@+id/refresh"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="새로고침"/>
+	
+   	<ListView
+		android:id="@+id/listview"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"/>
+	
+	<TextView
+		android:text="Made by 조재희"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="right|bottom"/>
+
+</LinearLayout>

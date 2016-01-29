@@ -71,7 +71,6 @@ public class CustomAdapter extends BaseAdapter {
     }
     
     private void createDownloadDialog(final ArrayList<String[]> attach) {
-        try{
         Dialog dialog = new Dialog(activity);
         LinearLayout layout = new LinearLayout(activity);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -119,8 +118,5 @@ public class CustomAdapter extends BaseAdapter {
         dialog.setContentView(layout);
         dialog.setTitle("첨부파일 다운로드");
         dialog.show();
-        }catch(Exception e) {
-            Log.e("affoparser", e+"");
-        }
     }
 }

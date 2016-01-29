@@ -5,7 +5,9 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import net.htmlparser.jericho.*;
+import org.jsoup.nodes.*;
+import org.jsoup.*;
+import org.jsoup.select.*;
 
 public class Parser {
     public interface onParseFinishListener {
@@ -16,7 +18,7 @@ public class Parser {
     private static String ORGIN_URL = "http://cw.hs.kr";
     
     private String url;
-    private Source source;
+    private Document doc;
     private ArrayList<String[]> list;
     private ArrayList<ArrayList<String[]>> files;
     private onParseFinishListener listener;
@@ -36,44 +38,25 @@ public class Parser {
             @Override
             public void run() {
                 try {
-                    URL nUrl = new URL(url);
-                    InputStream is = nUrl.openStream();
-                    source = new Source(new InputStreamReader(is, "EUC-KR"));
-                    
-                    //From cw.hs.kr's html file
-                    Element table = source.getAllElements(HTMLElementName.TABLE).get(0);
-                    Element tbody = table.getAllElements(HTMLElementName.TBODY).get(0);
-                    Element m_bottom = source.getElementById("m_bottom");
-                    Element m_bottom_cp = m_bottom.getAllElements(HTMLElementName.DIV).get(0);
-                    Element m_total = m_bottom_cp.getAllElements(HTMLElementName.DL).get(0);
-                    String total = m_total.getAllElements(HTMLElementName.DD).get(0).getContent().toString();
-                    total = total.substring(0, total.lastIndexOf("건"));
-                    int tr_size = Integer.parseInt(total, 10);
-                    tr_size = tr_size > 10 ? 10 : tr_size;
-                    for(int i = 0; i < tr_size; i++) {
-                        Element tr = tbody.getAllElements(HTMLElementName.TR).get(i);
-                        Element td = tr.getAllElements(HTMLElementName.TD).get(1);
-                        Element div = td.getAllElements(HTMLElementName.DIV).get(0);
-                        Element a = div.getAllElements(HTMLElementName.A).get(0);
-                        String href = ORGIN_URL+a.getAttributeValue("href");
-                        String title = a.getAttributeValue("title");
-                        Element td_date = tr.getAllElements(HTMLElementName.TD).get(3);
-                        String date = td_date.getContent().toString();
-                        int new_art = div.getAllElements(HTMLElementName.IMG).size();
-                        Parser.this.list.add(new String[]{title, href, date, new_art > 0 ? "1" : "0"});
+                    doc = Jsoup.connect(url).get();
+                    Elements articles = doc.select("td .m_ltitle");
+                    for(int i = 0; i < articles.size(); i++) {
+                        Element e = articles.get(i);
                         
-                        ArrayList<String[]> attachfiles = new ArrayList<>();
-                        Element div_attach = td.getAllElements(HTMLElementName.DIV).get(1);
-                        int a_count = div_attach.getAllElements(HTMLElementName.A).size();
-                        for(int j = 0; j < a_count; j++) {
-                            Element a_attach = div_attach.getAllElements(HTMLElementName.A).get(j);
-                            Element img = a_attach.getAllElements(HTMLElementName.IMG).get(0);
-                            String alt = img.getAttributeValue("alt");
-                            String href_attach = ORGIN_URL+a_attach.getAttributeValue("href");
-                            attachfiles.add(new String[]{alt, href_attach});
+                        //Article's data
+                        Element a = e.select("a").get(0);
+                        Element date = doc.select("tbody tr td").get(i*5+3);
+                        Elements img = e.select("img");
+                        Parser.this.list.add(new String[]{a.attr("title"), ORGIN_URL+a.attr("href"), date.text(), img.size() > 0 ? "1" : "0"});
+                        
+                        //Article's attachments
+                        Elements attachs = doc.select("tbody tr td .m_limage").get(i).select("a");
+                        ArrayList<String[]> attachList = new ArrayList<>();
+                        for(Element attach : attachs) {
+                            String title = attach.select("img").attr("alt");
+                            attachList.add(new String[]{title, ORGIN_URL+attach.attr("href")});
                         }
-                        
-                        files.add(attachfiles);
+                        Parser.this.files.add(attachList);
                     }
                     
                     Parser.this.listener.onFinish(Parser.this.list, Parser.this.files);

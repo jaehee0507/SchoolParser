@@ -31,7 +31,7 @@ public class MainActivity extends Activity  {
             }
         });
         
-        parser = new Parser("http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013003"/*"http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013"*/, 
+        parser = new Parser("http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013", 
                 new Parser.onParseFinishListener() {
                     @Override
                     public void onFinish(final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {

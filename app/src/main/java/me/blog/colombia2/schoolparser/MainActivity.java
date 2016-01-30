@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity  {
     }
     
     private Parser parser;
-    private RecyclerView articles;
+    protected RecyclerView articles;
     private TextView interneterr;
     private SwipeRefreshLayout refresh;
     private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
@@ -64,7 +64,12 @@ public class MainActivity extends AppCompatActivity  {
                 parser.start();
             }
         });
-        refresh.setRefreshing(true);
+        refresh.post(new Runnable() {
+            @Override
+            public void run() {
+                refresh.setRefreshing(true);
+            }
+        });
         
         parser = new Parser("http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013", 
                 new Parser.onParseFinishListener() {
@@ -74,30 +79,22 @@ public class MainActivity extends AppCompatActivity  {
                             @Override
                             public void run() {
                                 articles.setVisibility(View.VISIBLE);
-                                interneterr.setVisibility(View.GONE);
+                                interneterr.setVisibility(View.INVISIBLE);
                                 refresh.setRefreshing(false);
                                 
                                 ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, list, files);
                                 articles.setAdapter(adapter);
-                                
-                                /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView a, View v, int i, long l) {
-                                        Uri uri = Uri.parse(list.get(i)[1]);
-                                        Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                                        startActivity(it);
-                                    }
-                                });*/
                             }
                         });
                     }
                     
                     @Override
-                    public void onInternetError() {
+                    public void onInternetError(final Exception e) {
+                        Log.i("affoparser", e+"");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                articles.setVisibility(View.GONE);
+                                articles.setVisibility(View.INVISIBLE);
                                 interneterr.setVisibility(View.VISIBLE);
                                 refresh.setRefreshing(false);
                             }

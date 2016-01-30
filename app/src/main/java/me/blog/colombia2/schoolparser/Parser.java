@@ -12,7 +12,7 @@ import org.jsoup.select.*;
 public class Parser {
     public interface onParseFinishListener {
         public void onFinish(ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
-        public void onInternetError();
+        public void onInternetError(Exception e);
     }
     
     private static String ORGIN_URL = "http://cw.hs.kr";
@@ -38,7 +38,7 @@ public class Parser {
             @Override
             public void run() {
                 try {
-                    doc = Jsoup.connect(url).get();
+                    doc = Jsoup.connect(url).timeout(60*1000).get();
                     Elements articles = doc.select("td .m_ltitle");
                     for(int i = 0; i < articles.size(); i++) {
                         Element e = articles.get(i);
@@ -54,18 +54,16 @@ public class Parser {
                         Elements attachs = doc.select("tbody tr td .m_limage").get(i).select("a");
                         ArrayList<String[]> attachList = new ArrayList<>();
                         for(Element attach : attachs) {
-                            String title = attach.select("img").attr("alt");
+                            String title = attach.attr("title").replace(" 첨부파일 다운로드", "");
                             attachList.add(new String[]{title, ORGIN_URL+attach.attr("href")});
                         }
                         Parser.this.files.add(attachList);
                     }
                     
                     Parser.this.listener.onFinish(Parser.this.list, Parser.this.files);
-                } catch(MalformedURLException e) {
+                } catch(Exception e) {
                     e.printStackTrace();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                    Parser.this.listener.onInternetError();
+                    Parser.this.listener.onInternetError(e);
                 }
             }
         }).start();

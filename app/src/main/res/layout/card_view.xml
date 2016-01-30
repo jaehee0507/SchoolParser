@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:layout_marginTop="7dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:foreground="?android:attr/selectableItemBackground" 
@@ -26,8 +26,62 @@
             android:gravity="left|center"
             android:textColor="#000000"/>
         
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical">
+            
+            <ScrollView
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                
+                <TextView
+                    android:id="@+id/content_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#909090"
+                    android:textSize="12dp"/>
+                
+            </ScrollView>
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#d2d2d2"/>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="39dp"
+                android:orientation="horizontal">
+            
+                <Button
+                    android:id="@+id/gotourl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"
+                    android:textSize="14dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/goto_url"/>
+                
+                <Button
+                    android:id="@+id/attachments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"
+                    android:textSize="14dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/attachments"/>
+            
+            </LinearLayout>
+            
+        </LinearLayout>
+        
         <TextView
             android:id="@+id/date"
+            android:singleLine="true"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

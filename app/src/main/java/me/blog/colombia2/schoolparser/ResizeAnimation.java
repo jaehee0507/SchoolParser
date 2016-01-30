@@ -5,13 +5,17 @@ import android.view.animation.*;
 
 public class ResizeAnimation extends Animation {
     private View view;
+    private int startWidth;
+    private int endWidth;
     private int startHeight;
     private int endHeight;
     
-    public ResizeAnimation(View view, float f) {
+    public ResizeAnimation(View view, int endWidth, int endHeight) {
         this.view = view;
+        this.startWidth = view.getWidth();
+        this.endWidth = endWidth;
         this.startHeight = view.getHeight();
-        this.endHeight = (int) (view.getHeight()*f);
+        this.endHeight = endHeight;
     }
 
     @Override
@@ -21,8 +25,14 @@ public class ResizeAnimation extends Animation {
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
-        int result = (int) (this.startHeight+(this.endHeight-this.startHeight)*interpolatedTime);
-        this.view.getLayoutParams().height = result;
+        if(endWidth >= 0) {
+            int width = (int) (this.startWidth+(this.endWidth-this.startWidth)*interpolatedTime);
+            this.view.getLayoutParams().width = width;
+        }
+        if(endHeight >= 0) {
+            int height = (int) (this.startHeight+(this.endHeight-this.startHeight)*interpolatedTime);
+            this.view.getLayoutParams().height = height;
+        }
         this.view.requestLayout();
     }
 

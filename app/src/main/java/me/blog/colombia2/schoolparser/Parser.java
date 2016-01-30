@@ -47,6 +47,7 @@ public class Parser {
                         Element a = e.select("a").get(0);
                         Element date = doc.select("tbody tr td").get(i*5+3);
                         Elements img = e.select("img");
+                        
                         Parser.this.list.add(new String[]{a.attr("title"), ORGIN_URL+a.attr("href"), date.text(), img.size() > 0 ? "1" : "0"});
                         
                         //Article's attachments

@@ -22,4 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.jsoup:jsoup:1.8.3'
+    compile "com.android.support:appcompat-v7:23.1.0"
+    compile "com.android.support:cardview-v7:23.1.0"
+    compile "com.android.support:recyclerview-v7:23.1.0"
 }

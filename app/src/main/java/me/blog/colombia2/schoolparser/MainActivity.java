@@ -9,11 +9,36 @@ import android.view.*;
 import android.content.*;
 import java.util.*;
 
-public class MainActivity extends Activity  {
+import android.support.v7.app.*;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
+
+public class MainActivity extends AppCompatActivity  {
+    private class MyScrollListener extends RecyclerView.OnScrollListener {
+        private LinearLayoutManager llm;
+        
+        public MyScrollListener(LinearLayoutManager llm) {
+            super();
+            this.llm = llm;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            refresh.setEnabled(llm.findFirstCompletelyVisibleItemPosition() == 0);
+        }
+    }
+    
     private Parser parser;
-    private ListView listView;
-    private Button refresh;
+    private RecyclerView articles;
     private TextView interneterr;
+    private SwipeRefreshLayout refresh;
     private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent i) {
@@ -26,19 +51,20 @@ public class MainActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        listView = (ListView) findViewById(R.id.listview);
+        articles = (RecyclerView) findViewById(R.id.articles);
+        final LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        articles.setLayoutManager(llm);
+        articles.setOnScrollListener(new MyScrollListener(llm));
         interneterr = (TextView) findViewById(R.id.interneterr);
-        refresh = (Button) findViewById(R.id.refresh);
-        refresh.setClickable(false);
-        refresh.setOnClickListener(new View.OnClickListener() {
+        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
-                listView.setAdapter(null);
+            public void onRefresh() {
                 parser.start();
-                refresh.setClickable(false);
-                interneterr.setVisibility(View.GONE);
             }
         });
+        refresh.setRefreshing(true);
         
         parser = new Parser("http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013", 
                 new Parser.onParseFinishListener() {
@@ -47,20 +73,21 @@ public class MainActivity extends Activity  {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                articles.setVisibility(View.VISIBLE);
                                 interneterr.setVisibility(View.GONE);
-                                refresh.setClickable(true);
+                                refresh.setRefreshing(false);
                                 
-                                CustomAdapter adapter = new CustomAdapter(MainActivity.this, R.layout.list_layout, list, files);
-                                listView.setAdapter(adapter);
+                                ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, list, files);
+                                articles.setAdapter(adapter);
                                 
-                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView a, View v, int i, long l) {
                                         Uri uri = Uri.parse(list.get(i)[1]);
                                         Intent it = new Intent(Intent.ACTION_VIEW, uri);
                                         startActivity(it);
                                     }
-                                });
+                                });*/
                             }
                         });
                     }
@@ -70,8 +97,9 @@ public class MainActivity extends Activity  {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                articles.setVisibility(View.GONE);
                                 interneterr.setVisibility(View.VISIBLE);
-                                refresh.setClickable(true);
+                                refresh.setRefreshing(false);
                             }
                         });
                     }

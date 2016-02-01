@@ -13,6 +13,7 @@ import android.support.v7.app.*;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.design.widget.*;
 
 public class MainActivity extends AppCompatActivity  {
     private class MyScrollListener extends RecyclerView.OnScrollListener {
@@ -35,14 +36,14 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     
+    private LinearLayout mainContent;
     private Parser parser;
-    protected RecyclerView articles;
-    private TextView interneterr;
+    private RecyclerView articles;
     private SwipeRefreshLayout refresh;
     private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent i) {
-            Toast.makeText(ctx, "/sdcard/Download/에 다운로드가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+            Snackbar.make(mainContent, "/sdcard/Download/에 다운로드가 완료되었습니다.", Snackbar.LENGTH_SHORT).show();
         }
     };
     
@@ -51,12 +52,12 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        mainContent = (LinearLayout) findViewById(R.id.maincontent);
         articles = (RecyclerView) findViewById(R.id.articles);
         final LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         articles.setLayoutManager(llm);
         articles.setOnScrollListener(new MyScrollListener(llm));
-        interneterr = (TextView) findViewById(R.id.interneterr);
         refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -71,15 +72,16 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
         
-        parser = new Parser("http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013", 
-                new Parser.onParseFinishListener() {
+        parser = new Parser(
+                "http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013"
+                /*"http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001002003"*/
+                , new Parser.onParseFinishListener() {
                     @Override
                     public void onFinish(final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 articles.setVisibility(View.VISIBLE);
-                                interneterr.setVisibility(View.INVISIBLE);
                                 refresh.setRefreshing(false);
                                 
                                 ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, list, files);
@@ -90,12 +92,19 @@ public class MainActivity extends AppCompatActivity  {
                     
                     @Override
                     public void onInternetError(final Exception e) {
-                        Log.i("affoparser", e+"");
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 articles.setVisibility(View.INVISIBLE);
-                                interneterr.setVisibility(View.VISIBLE);
+                                final Snackbar snackbar = Snackbar.make(mainContent, R.string.check_internet, Snackbar.LENGTH_INDEFINITE);
+                                snackbar.setAction(R.string.retry, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        snackbar.dismiss();
+                                        parser.start();
+                                    }
+                                });
+                                snackbar.show();
                                 refresh.setRefreshing(false);
                             }
                         });
@@ -115,5 +124,12 @@ public class MainActivity extends AppCompatActivity  {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(completeReceiver);
+    }
+    
+    public void changeActivity(ArrayList<String[]> files) {
+        Intent i = new Intent(MainActivity.this, AttachmentsActivity.class);
+        SharedConstants.data = files;
+        startActivity(i);
+        
     }
 }

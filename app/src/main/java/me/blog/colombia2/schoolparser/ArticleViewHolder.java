@@ -7,15 +7,17 @@ import android.support.v7.widget.*;
 import android.util.*;
 import android.view.animation.*;
 
+import com.wang.avi.AVLoadingIndicatorView;
+
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected TextView titleText;
     protected TextView dateText;
     protected LinearLayout content;
+    protected AVLoadingIndicatorView loading;
     protected TextView content_text;
     protected Button content_gotourl;
     protected Button content_attachments;
     protected CardView card;
-    protected ScrollView scroll;
     protected boolean selected;
     
     public ArticleViewHolder(View itemView) {
@@ -23,13 +25,14 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         titleText = (TextView) itemView.findViewById(R.id.title);
         dateText  = (TextView) itemView.findViewById(R.id.date);
         content   = (LinearLayout) itemView.findViewById(R.id.content);
-        scroll    = (ScrollView) itemView.findViewById(R.id.scroll);
         card      = (CardView) itemView;
         selected  = false;
         
         content_text        = (TextView) content.findViewById(R.id.content_text);
         content_gotourl     = (Button) content.findViewById(R.id.gotourl);
         content_attachments = (Button) content.findViewById(R.id.attachments);
+        
+        loading = (AVLoadingIndicatorView) itemView.findViewById(R.id.loading);
     }
     
     public void openHolder() {

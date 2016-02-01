@@ -5,5 +5,7 @@
     <string name="check_internet">인터넷을 확인해주세요.</string>
     <string name="goto_url">이 게시글 열기</string>
     <string name="attachments">첨부파일 확인</string>
+    <string name="attachments_down">첨부파일 다운로드</string>
+    <string name="retry">재시도</string>
 
 </resources>

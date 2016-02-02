@@ -44,7 +44,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     public void onBindViewHolder(final ArticleViewHolder holder, final int position) {
         String title = this.data.get(position)[0];
         if(this.data.get(position)[3].equals("1")) {
-            title = "N "+title;
+            title += " N";
             SpannableStringBuilder builder = new SpannableStringBuilder(title);
             Drawable icon = activity.getResources().getDrawable(R.drawable.newicon);
             icon.setBounds(0, 0, holder.titleText.getLineHeight(), holder.titleText.getLineHeight());
@@ -61,7 +61,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
                     b.draw(canvas);
                     canvas.restore();
                 }
-            }, 0, 1, SpannableStringBuilder.SPAN_INCLUSIVE_INCLUSIVE);
+            }, title.length()-1, title.length(), SpannableStringBuilder.SPAN_INCLUSIVE_INCLUSIVE);
             holder.titleText.setText(builder);
         } else
             holder.titleText.setText(title);
@@ -70,6 +70,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(activity.refresh.isRefreshing())
+                    return;
+                
                 if(!holder.selected) {
                     holder.openHolder();
                     setContent(holder.loading, holder.content_text, data.get(position)[1]);

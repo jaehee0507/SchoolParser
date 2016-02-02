@@ -1,36 +1,36 @@
 package me.blog.colombia2.schoolparser;
 
 import android.support.v7.app.*;
+import android.support.v4.widget.*;
 import android.os.*;
 import android.widget.*;
 import android.view.*;
 import android.util.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
+import android.support.design.widget.*;
 import java.util.*;
+import java.io.*;
+import java.net.*;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 
 public class AttachmentsActivity extends AppCompatActivity {
-    protected LinearLayout main;
-    protected HashMap<String, View> views;
+    protected HashMap<RelativeLayout, String> views;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        main = new LinearLayout(this);
-        main.setOrientation(LinearLayout.VERTICAL);
-        setContentView(main);
+        setContentView(R.layout.attachments);
         
         views = new HashMap<>();
         
         ArrayList<String[]> files = SharedConstants.data;
-        ScrollView scroll = new ScrollView(this);
-        scroll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1));
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.content_layout);
         for(String[] attach : files) {
-            layout.addView(getCheckBoxLayout(attach));
+            RelativeLayout checkbox = getCheckBoxLayout(attach);
+            views.put(checkbox, attach[1]);
+            layout.addView(checkbox);
             View view = new View(this);
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
                                                                                                              TypedValue.COMPLEX_UNIT_DIP,
@@ -39,23 +39,49 @@ public class AttachmentsActivity extends AppCompatActivity {
             view.setBackgroundColor(Color.rgb(200, 200, 200));
             layout.addView(view);
         }
-        scroll.addView(layout);
-        main.addView(scroll);
         
-        Button button = new Button(this);
-        button.setBackgroundDrawable(new ColorDrawable(Color.rgb(180, 180, 180)));
-        MaterialRippleLayout ripple = MaterialRippleLayout.on(button)
-                                        .rippleColor(Color.rgb(40, 40, 40))
-                                        .rippleOverlay(true)
-                                        .rippleAlpha(0.5f)
-                                        .rippleDuration(200)
-                                        .rippleFadeDuration(100)
-                                        .create();
-        main.addView(ripple);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Set<RelativeLayout> keys = views.keySet();
+                for(RelativeLayout layout : keys) {
+                    final CheckBox checkbox = (CheckBox) layout.findViewById(0);
+                    if(!checkbox.isChecked())
+                        continue;
+                    
+                    final String value = views.get(checkbox);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                BufferedInputStream bis = new BufferedInputStream(new URL(value).openStream());
+                                File target = new File("/sdcard/Download/"+checkbox.getText().toString());
+                                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(target));
+                                
+                                byte[] bytes = new byte[4096];
+                                while(bis.read(bytes, 0, 4096) != -1)
+                                    bos.write(bytes, 0, 4096);
+                                    
+                                bis.close();
+                                bos.flush();
+                                bos.close();
+                                
+                                checkbox.setText(checkbox.getText()+" V");
+                            } catch(Exception e) {
+                                
+                            }
+                        }
+                    }).start();
+                }
+            }
+        });
     }
     
-    private CheckBox getCheckBoxLayout(String[] attach) {
+    private RelativeLayout getCheckBoxLayout(String[] attach) {
+        RelativeLayout layout = new RelativeLayout(this);
         CheckBox checkbox = new CheckBox(this);
+        checkbox.setId(0);
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(Color.argb(20, 0, 0, 0)));
         states.addState(new int[]{android.R.attr.state_focused}, new ColorDrawable(Color.argb(0, 0, 0, 0)));
@@ -67,6 +93,7 @@ public class AttachmentsActivity extends AppCompatActivity {
                                                                                                              TypedValue.COMPLEX_UNIT_DIP,
                                                                                                              60,
                                                                                                              getResources().getDisplayMetrics())));
-        return checkbox;
+        layout.addView(checkbox);
+        return layout;
     }
 }

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity  {
     private LinearLayout mainContent;
     private Parser parser;
     private RecyclerView articles;
-    private SwipeRefreshLayout refresh;
+    protected SwipeRefreshLayout refresh;
     private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context ctx, Intent i) {

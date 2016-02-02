@@ -96,4 +96,23 @@ public class AttachmentsActivity extends AppCompatActivity {
         layout.addView(checkbox);
         return layout;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.attachments, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.select_all) {
+            Set<RelativeLayout> keys = views.keySet();
+            for(RelativeLayout layout : keys) {
+                CheckBox checkbox = (CheckBox) layout.findViewById(0);
+                checkbox.setChecked(true);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -50,29 +50,60 @@ public class AttachmentsActivity extends AppCompatActivity {
                     if(!checkbox.isChecked())
                         continue;
                     
-                    final String value = views.get(checkbox);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                BufferedInputStream bis = new BufferedInputStream(new URL(value).openStream());
-                                File target = new File("/sdcard/Download/"+checkbox.getText().toString());
-                                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(target));
-                                
-                                byte[] bytes = new byte[4096];
-                                while(bis.read(bytes, 0, 4096) != -1)
-                                    bos.write(bytes, 0, 4096);
-                                    
-                                bis.close();
-                                bos.flush();
-                                bos.close();
-                                
-                                checkbox.setText(checkbox.getText()+" V");
-                            } catch(Exception e) {
-                                
+                    final View progress = layout.findViewById(1);
+                    final String value = views.get(layout);
+                    try {
+                        FileDownloader downloader = new FileDownloader(value, "/sdcard/Download/"+checkbox.getText());
+                        downloader.setFileDownloadListener(new FileDownloader.FileDowloadListener() {
+                            private int fileSize;
+                            
+                            @Override
+                            public void onDownloadStart(int fileSize) {
+                                this.fileSize = fileSize;
                             }
-                        }
-                    }).start();
+                            
+                            @Override
+                            public void onDownloading(int currentBytes) {
+                                final float prog = (float) currentBytes / (float) fileSize;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (prog*getWindowManager().getDefaultDisplay().getWidth()), (int) TypedValue.applyDimension(
+                                                                                                                                                                                   TypedValue.COMPLEX_UNIT_DIP,
+                                                                                                                                                                                   3.2f,
+                                                                                                                                                                                   getResources().getDisplayMetrics()));
+                                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                                        progress.setLayoutParams(params);
+                                    }
+                                });
+                            }
+                            
+                            @Override
+                            public void onDownloadError(Exception err) {
+                                Log.i("affoparser", err+"");
+                            }
+                            
+                            @Override
+                            public void onDownloadComplete(File result) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, (int) TypedValue.applyDimension(
+                                                                                                                 TypedValue.COMPLEX_UNIT_DIP,
+                                                                                                                 3.2f,
+                                                                                                                 getResources().getDisplayMetrics()));
+                                        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                                        progress.setLayoutParams(params);
+                                        
+                                        Toast.makeText(AttachmentsActivity.this, checkbox.getText()+" 다운로드 완료", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+                        downloader.start();
+                    } catch(Exception e) {
+                        
+                    }
                 }
             }
         });
@@ -80,6 +111,17 @@ public class AttachmentsActivity extends AppCompatActivity {
     
     private RelativeLayout getCheckBoxLayout(String[] attach) {
         RelativeLayout layout = new RelativeLayout(this);
+        View progress = new View(this);
+        progress.setId(1);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, (int) TypedValue.applyDimension(
+                                                                                      TypedValue.COMPLEX_UNIT_DIP,
+                                                                                      3.2f,
+                                                                                      getResources().getDisplayMetrics()));
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        progress.setBackgroundColor(Color.parseColor("#2196F3"));
+        progress.setLayoutParams(params);
+        layout.addView(progress);
+        
         CheckBox checkbox = new CheckBox(this);
         checkbox.setId(0);
         StateListDrawable states = new StateListDrawable();

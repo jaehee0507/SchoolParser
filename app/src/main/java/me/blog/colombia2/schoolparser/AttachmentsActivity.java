@@ -68,10 +68,10 @@ public class AttachmentsActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (prog*getWindowManager().getDefaultDisplay().getWidth()), (int) TypedValue.applyDimension(
-                                                                                                                                                                                   TypedValue.COMPLEX_UNIT_DIP,
-                                                                                                                                                                                   3.2f,
-                                                                                                                                                                                   getResources().getDisplayMetrics()));
+                                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (prog*checkbox.getWidth()), (int) TypedValue.applyDimension(
+                                                                                                                                                     TypedValue.COMPLEX_UNIT_DIP,
+                                                                                                                                                     3.2f,
+                                                                                                                                                     getResources().getDisplayMetrics()));
                                         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                         progress.setLayoutParams(params);
                                     }

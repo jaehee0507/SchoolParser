@@ -40,12 +40,6 @@ public class MainActivity extends AppCompatActivity  {
     private Parser parser;
     private RecyclerView articles;
     protected SwipeRefreshLayout refresh;
-    private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context ctx, Intent i) {
-            Snackbar.make(mainContent, "/sdcard/Download/에 다운로드가 완료되었습니다.", Snackbar.LENGTH_SHORT).show();
-        }
-    };
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +68,7 @@ public class MainActivity extends AppCompatActivity  {
         
         parser = new Parser(
                 "http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001013"
-                /*"http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001002003"*/
+              /*  "http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001002003"*/
                 , new Parser.onParseFinishListener() {
                     @Override
                     public void onFinish(final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
@@ -112,24 +106,10 @@ public class MainActivity extends AppCompatActivity  {
                 });
         parser.start();
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        IntentFilter iFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        registerReceiver(completeReceiver, iFilter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(completeReceiver);
-    }
     
     public void changeActivity(ArrayList<String[]> files) {
         Intent i = new Intent(MainActivity.this, AttachmentsActivity.class);
         SharedConstants.data = files;
         startActivity(i);
-        
     }
 }

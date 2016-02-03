@@ -30,6 +30,10 @@ public class Parser {
         this.listener = listener;
     }
     
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
     public void start() {
         this.list.clear();
         this.files.clear();

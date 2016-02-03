@@ -55,11 +55,11 @@ public class FileDownloader {
                     
                     byte[] bytes = new byte[4096];
                     int bytes_count = 0;
-                    while(bis.read(bytes, 0, 4096) != -1) {
-                        bos.write(bytes, 0, 4096);
-                        bytes_count+=4096;
-                        if(bytes_count > fileSize)
-                            bytes_count = fileSize;
+                    int read = 0;
+                    while((read = bis.read(bytes, 0, 4096)) != -1) {
+                        bos.write(bytes, 0, read);
+                        bytes_count += read;
+                        
                         listener.onDownloading(bytes_count);
                     }
                     

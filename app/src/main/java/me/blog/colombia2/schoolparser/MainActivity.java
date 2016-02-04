@@ -119,6 +119,5 @@ public class MainActivity extends AppCompatActivity  {
         Intent i = new Intent(MainActivity.this, AttachmentsActivity.class);
         SharedConstants.data = files;
         startActivity(i);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

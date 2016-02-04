@@ -3,12 +3,16 @@ package me.blog.colombia2.schoolparser;
 import android.support.v7.app.*;
 import android.support.v4.widget.*;
 import android.os.*;
+import android.content.*;
+import android.app.*;
 import android.widget.*;
 import android.view.*;
 import android.util.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.support.design.widget.*;
+import android.webkit.*;
+import android.net.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -84,7 +88,7 @@ public class AttachmentsActivity extends AppCompatActivity {
                             }
                             
                             @Override
-                            public void onDownloadComplete(File result) {
+                            public void onDownloadComplete(final File result) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -94,6 +98,23 @@ public class AttachmentsActivity extends AppCompatActivity {
                                                                                                                  getResources().getDisplayMetrics()));
                                         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                         progress.setLayoutParams(params);
+                                        
+                                        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                        Intent toLaunch = new Intent();
+                                        toLaunch.setAction(Intent.ACTION_VIEW);
+                                        toLaunch.setDataAndType(Uri.fromFile(result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                        PendingIntent pendingIntent = PendingIntent.getActivity(AttachmentsActivity.this, 0, toLaunch, 0);
+                                        Notification.Builder builder = new Notification.Builder(AttachmentsActivity.this);
+
+                                        builder.setAutoCancel(true);
+                                        builder.setContentTitle(result.getName());               
+                                        builder.setContentText("눌러서 열기");
+                                        builder.setSmallIcon(R.drawable.ic_file_download_white_24dp);
+                                        builder.setContentIntent(pendingIntent);
+                                        builder.build();
+
+                                        Notification myNotication = builder.getNotification();
+                                        manager.notify((int) System.currentTimeMillis(), myNotication);
                                         
                                         Toast.makeText(AttachmentsActivity.this, "/sdcard/Download/"+checkbox.getText()+"에 다운로드됨", Toast.LENGTH_SHORT).show();
                                     }
@@ -155,12 +176,12 @@ public class AttachmentsActivity extends AppCompatActivity {
             }
             return true;
         }
+        
+        if(item.getItemId() == R.id.home) {
+            finish();
+            return true;
+        }
+        
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

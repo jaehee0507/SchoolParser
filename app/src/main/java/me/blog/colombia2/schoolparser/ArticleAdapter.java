@@ -11,7 +11,7 @@ import android.support.v4.widget.*;
 import android.support.v7.widget.*;
 import android.text.*;
 import android.text.style.*;
-import android.util.Log;
+import android.util.*;
 
 import java.util.*;
 import org.jsoup.nodes.*;
@@ -42,6 +42,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
     @Override
     public void onBindViewHolder(final ArticleViewHolder holder, final int position) {
+        if(position == data.size()-1) {
+            int fivedp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, activity.getResources().getDisplayMetrics());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(fivedp, fivedp, fivedp, fivedp);
+            holder.card.setLayoutParams(params);
+        }
         String title = this.data.get(position)[0];
         if(this.data.get(position)[3].equals("1")) {
             title += " N";
@@ -108,7 +114,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     }
     
     private void setContent(final AVLoadingIndicatorView loading, final TextView textview, final String url) {
-        if(!textview.getText().toString().equals(""))
+        if(loading.getVisibility() == View.GONE)
             return;
         
         new Thread(new Runnable() {

@@ -1,15 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/maincontent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-	android:orientation="vertical"
-    android:gravity="center|top">
+    android:layout_height="match_parent">
 	
 	<android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-		android:layout_weight="1">
+        android:layout_height="match_parent">
         
    	    <android.support.v7.widget.RecyclerView
 	        android:id="@+id/articles"
@@ -18,10 +17,19 @@
     
     </android.support.v4.widget.SwipeRefreshLayout>
 	
-	<TextView
-		android:text="Made by 조재희"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="right|bottom"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:clickable="true"
+        android:src="@drawable/ic_settings_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="#E53935"
+        app:rippleColor="#D32F2F"
+        app:fabSize="normal"
+        app:elevation="6dp"
+        app:pressedTranslationZ="6dp"/>
 
-</LinearLayout>
+</RelativeLayout>

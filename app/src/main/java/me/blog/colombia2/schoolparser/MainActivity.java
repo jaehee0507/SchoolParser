@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
+            if(newState != 0)
+                fab.hide();
+            else
+                fab.show();
         }
 
         @Override
@@ -36,22 +40,26 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     
-    private LinearLayout mainContent;
+    private RelativeLayout mainContent;
     private Parser parser;
     private RecyclerView articles;
     protected SwipeRefreshLayout refresh;
+    protected FloatingActionButton fab;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        mainContent = (LinearLayout) findViewById(R.id.maincontent);
+        mainContent = (RelativeLayout) findViewById(R.id.maincontent);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        
         articles = (RecyclerView) findViewById(R.id.articles);
         final LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         articles.setLayoutManager(llm);
         articles.setOnScrollListener(new MyScrollListener(llm));
+        
         refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -111,5 +119,6 @@ public class MainActivity extends AppCompatActivity  {
         Intent i = new Intent(MainActivity.this, AttachmentsActivity.class);
         SharedConstants.data = files;
         startActivity(i);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

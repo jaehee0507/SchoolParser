@@ -95,7 +95,7 @@ public class AttachmentsActivity extends AppCompatActivity {
                                         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                         progress.setLayoutParams(params);
                                         
-                                        Toast.makeText(AttachmentsActivity.this, checkbox.getText()+" 다운로드 완료", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AttachmentsActivity.this, "/sdcard/Download/"+checkbox.getText()+"에 다운로드됨", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -156,5 +156,11 @@ public class AttachmentsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

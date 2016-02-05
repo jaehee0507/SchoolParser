@@ -1,23 +1,19 @@
 package me.blog.colombia2.schoolparser;
 
-import android.support.v7.app.*;
-import android.support.v4.widget.*;
-import android.os.*;
-import android.content.*;
 import android.app.*;
-import android.widget.*;
-import android.view.*;
-import android.util.*;
+import android.content.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
-import android.support.design.widget.*;
-import android.webkit.*;
 import android.net.*;
-import java.util.*;
+import android.os.*;
+import android.support.design.widget.*;
+import android.support.v7.app.*;
+import android.util.*;
+import android.view.*;
+import android.webkit.*;
+import android.widget.*;
 import java.io.*;
-import java.net.*;
-
-import com.balysv.materialripple.MaterialRippleLayout;
+import java.util.*;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;
@@ -29,7 +25,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         
         views = new HashMap<>();
         
-        ArrayList<String[]> files = SharedConstants.data;
+        ArrayList<String[]> files = SharedConstants.ATTACHMENTS;
         LinearLayout layout = (LinearLayout) findViewById(R.id.content_layout);
         for(String[] attach : files) {
             RelativeLayout checkbox = getCheckBoxLayout(attach);
@@ -174,11 +170,6 @@ public class AttachmentsActivity extends AppCompatActivity {
                 CheckBox checkbox = (CheckBox) layout.findViewById(0);
                 checkbox.setChecked(true);
             }
-            return true;
-        }
-        
-        if(item.getItemId() == R.id.home) {
-            finish();
             return true;
         }
         

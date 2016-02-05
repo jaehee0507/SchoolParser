@@ -2,7 +2,6 @@ package me.blog.colombia2.schoolparser;
 
 import java.io.*;
 import java.net.*;
-import java.lang.*;
 
 public class FileDownloader {
     public interface FileDowloadListener {

@@ -1,25 +1,20 @@
 package me.blog.colombia2.schoolparser;
 
-import android.view.*;
-import android.widget.*;
+import android.content.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
-import android.content.*;
 import android.net.*;
-import android.support.v7.app.*;
-import android.support.v4.widget.*;
 import android.support.v7.widget.*;
 import android.text.*;
 import android.text.style.*;
 import android.util.*;
-
+import android.view.*;
+import android.widget.*;
+import com.wang.avi.*;
 import java.util.*;
+import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import org.jsoup.*;
-
-import com.balysv.materialripple.MaterialRippleLayout;
-import com.wang.avi.AVLoadingIndicatorView;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     private MainActivity activity;

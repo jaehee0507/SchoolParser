@@ -8,5 +8,8 @@
     <string name="attachments_down">첨부파일 다운로드</string>
     <string name="retry">재시도</string>
     <string name="select_all">전체선택</string>
+    <string name="loading">불러오는 중...</string>
+    <string name="settings">환경설정</string>
+    <string name="categories">게시판 설정</string>
 
 </resources>

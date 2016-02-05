@@ -1,13 +1,10 @@
 package me.blog.colombia2.schoolparser;
 
-import android.view.*;
-import android.widget.*;
-import android.support.v4.widget.*;
 import android.support.v7.widget.*;
 import android.util.*;
-import android.view.animation.*;
-
-import com.wang.avi.AVLoadingIndicatorView;
+import android.view.*;
+import android.widget.*;
+import com.wang.avi.*;
 
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected TextView titleText;

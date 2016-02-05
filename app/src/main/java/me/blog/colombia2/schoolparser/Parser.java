@@ -1,16 +1,12 @@
 package me.blog.colombia2.schoolparser;
 
-import java.lang.*;
-import java.net.*;
-import java.io.*;
 import java.util.*;
-
-import org.jsoup.nodes.*;
 import org.jsoup.*;
+import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 public class Parser {
-    public interface onParseFinishListener {
+    public interface OnParseFinishListener {
         public void onFinish(ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
         public void onInternetError(Exception e);
     }
@@ -21,12 +17,24 @@ public class Parser {
     private Document doc;
     private ArrayList<String[]> list;
     private ArrayList<ArrayList<String[]>> files;
-    private onParseFinishListener listener;
+    private OnParseFinishListener listener;
     
-    public Parser(String url, onParseFinishListener listener) {
+    public Parser() {
+        this("");
+    }
+    
+    public Parser(String url) {
+        this(url, null);
+    }
+    
+    public Parser(String url, OnParseFinishListener listener) {
         this.url = url;
         this.list = new ArrayList<>();
         this.files = new ArrayList<>();
+        this.listener = listener;
+    }
+    
+    public void setOnParseFinishListener(OnParseFinishListener listener) {
         this.listener = listener;
     }
     

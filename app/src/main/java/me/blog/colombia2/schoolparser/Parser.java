@@ -7,7 +7,7 @@ import org.jsoup.select.*;
 
 public class Parser {
     public interface OnParseFinishListener {
-        public void onFinish(ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
+        public void onFinish(String category, ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
         public void onInternetError(Exception e);
     }
     
@@ -51,6 +51,7 @@ public class Parser {
             public void run() {
                 try {
                     doc = Jsoup.connect(url).timeout(10*1000).get();
+                    String category_name = doc.getElementById("menuName").text();
                     Elements articles = doc.select("tbody tr td .m_ltitle");
                     for(int i = 0; i < articles.size(); i++) {
                         Element e = articles.get(i);
@@ -77,7 +78,7 @@ public class Parser {
                         Parser.this.files.add(attachList);
                     }
                     
-                    Parser.this.listener.onFinish(Parser.this.list, Parser.this.files);
+                    Parser.this.listener.onFinish(category_name, Parser.this.list, Parser.this.files);
                 } catch(Exception e) {
                     e.printStackTrace();
                     Parser.this.listener.onInternetError(e);

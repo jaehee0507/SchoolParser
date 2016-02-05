@@ -12,10 +12,4 @@ public class SharedConstants {
         "http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001004002",
         "http://cw.hs.kr/index.jsp?SCODE=S0000000213&mnu=M001002004"
     };
-    public static String[] CATEGORY_NAMES = {
-        "합격자 공지사항",
-        "공지사항",
-        "가정통신문",
-        "학교소식"
-    };
 }

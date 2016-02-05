@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity  {
         SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
         SharedConstants.PARSER.setOnParseFinishListener(new Parser.OnParseFinishListener() {
             @Override
-            public void onFinish(final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
+            public void onFinish(final String category, final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity  {
                         ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, list, files);
                         articles.setAdapter(adapter);
                         
-                        getSupportActionBar().setTitle(SharedConstants.CATEGORY_NAMES[SharedConstants.CURRENT_CATEGORY]);
+                        getSupportActionBar().setTitle(category);
                     }
                 });
             }

@@ -31,9 +31,10 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     
-    protected RelativeLayout mainContent;
+    protected LinearLayout mainContent;
     protected RecyclerView articles;
     protected SwipeRefreshLayout refresh;
+    protected Button page;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,9 @@ public class MainActivity extends AppCompatActivity  {
         
         getSupportActionBar().setTitle(R.string.loading);
         
-        mainContent = (RelativeLayout) findViewById(R.id.maincontent);
+        mainContent = (LinearLayout) findViewById(R.id.maincontent);
         
+        page = (Button) findViewById(R.id.page);
         articles = (RecyclerView) findViewById(R.id.articles);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity  {
         SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
         SharedConstants.PARSER.setOnParseFinishListener(new Parser.OnParseFinishListener() {
             @Override
-            public void onFinish(final String category, final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
+            public void onFinish(final String category, final int total, final ArrayList<String[]> list, final ArrayList<ArrayList<String[]>> files) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -77,13 +79,44 @@ public class MainActivity extends AppCompatActivity  {
                         ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, list, files);
                         articles.setAdapter(adapter);
                         
+                        
+                        
                         getSupportActionBar().setTitle(category);
+                        page.setText(SharedConstants.PARSER.currentPage+"/"+total);
+                        page.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                LinearLayout layout = new LinearLayout(MainActivity.this);
+                                layout.setGravity(Gravity.CENTER);
+                                
+                                final NumberPicker picker = new NumberPicker(MainActivity.this);
+                                picker.setMinValue(1);
+                                picker.setMaxValue(total);
+                                picker.setValue(SharedConstants.PARSER.currentPage);
+                                layout.addView(picker);
+                                
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setView(layout);
+                                builder.setTitle("페이지 선택");
+                                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        SharedConstants.PARSER.setPage(picker.getValue());
+                                        page.setText(SharedConstants.PARSER.currentPage+"/"+total);
+                                        refresh();
+                                    }
+                                });
+                                builder.setNegativeButton("취소", null);
+                                builder.create().show();
+                            }
+                        });
                     }
                 });
             }
             
             @Override
             public void onInternetError(final Exception e) {
+                android.util.Log.i("affoparser", e+"");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -93,13 +126,13 @@ public class MainActivity extends AppCompatActivity  {
                             @Override
                             public void onClick(View v) {
                                 snackbar.dismiss();
-                                SharedConstants.PARSER.start();
+                                refresh();
                             }
                         });
                         snackbar.show();
                         refresh.setRefreshing(false);
                         
-                        getSupportActionBar().setTitle(R.string.app_name);
+                        getSupportActionBar().setTitle(R.string.internet_error);
                     }
                 });
             }
@@ -116,43 +149,42 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.settings:
-                return true;
-                
             case R.id.categories_1:
-                refresh.setRefreshing(true);
-                getSupportActionBar().setTitle(R.string.loading);
+                SharedConstants.PARSER.setPage(1);
                 SharedConstants.CURRENT_CATEGORY = 0;
                 SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
-                SharedConstants.PARSER.start();
+                refresh();
                 return true;
                 
             case R.id.categories_2:
-                refresh.setRefreshing(true);
-                getSupportActionBar().setTitle(R.string.loading);
+                SharedConstants.PARSER.setPage(1);
                 SharedConstants.CURRENT_CATEGORY = 1;
                 SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
-                SharedConstants.PARSER.start();
+                refresh();
                 return true;
                 
             case R.id.categories_3:
-                refresh.setRefreshing(true);
-                getSupportActionBar().setTitle(R.string.loading);
+                SharedConstants.PARSER.setPage(1);
                 SharedConstants.CURRENT_CATEGORY = 2;
                 SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
-                SharedConstants.PARSER.start();
+                refresh();
                 return true;
                 
             case R.id.categories_4:
-                refresh.setRefreshing(true);
-                getSupportActionBar().setTitle(R.string.loading);
+                SharedConstants.PARSER.setPage(1);
                 SharedConstants.CURRENT_CATEGORY = 3;
                 SharedConstants.PARSER.setUrl(SharedConstants.URLS[SharedConstants.CURRENT_CATEGORY]);
-                SharedConstants.PARSER.start();
+                refresh();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    
+    protected void refresh() {
+        refresh.setRefreshing(true);
+        getSupportActionBar().setTitle(R.string.loading);
+        SharedConstants.PARSER.start();
     }
     
     public void changeActivity(ArrayList<String[]> files) {

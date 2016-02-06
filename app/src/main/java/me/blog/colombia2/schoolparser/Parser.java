@@ -7,17 +7,19 @@ import org.jsoup.select.*;
 
 public class Parser {
     public interface OnParseFinishListener {
-        public void onFinish(String category, ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
+        public void onFinish(String category, int total, ArrayList<String[]> list, ArrayList<ArrayList<String[]>> files);
         public void onInternetError(Exception e);
     }
     
     private static String ORGIN_URL = "http://cw.hs.kr";
     
+    private String url_old;
     private String url;
     private Document doc;
     private ArrayList<String[]> list;
     private ArrayList<ArrayList<String[]>> files;
     private OnParseFinishListener listener;
+    protected int currentPage = 1;
     
     public Parser() {
         this("");
@@ -28,7 +30,8 @@ public class Parser {
     }
     
     public Parser(String url, OnParseFinishListener listener) {
-        this.url = url;
+        this.url_old = url;
+        this.url = ORGIN_URL+url+"&page="+currentPage;
         this.list = new ArrayList<>();
         this.files = new ArrayList<>();
         this.listener = listener;
@@ -39,7 +42,13 @@ public class Parser {
     }
     
     public void setUrl(String url) {
-        this.url = url;
+        this.url_old = url;
+        this.url = ORGIN_URL+url+"&page="+currentPage;
+    }
+    
+    public void setPage(int page) {
+        this.currentPage = page;
+        this.url = ORGIN_URL+url_old+"&page="+currentPage;
     }
     
     public void start() {
@@ -51,7 +60,7 @@ public class Parser {
             public void run() {
                 try {
                     doc = Jsoup.connect(url).timeout(10*1000).get();
-                    String category_name = doc.getElementById("menuName").text();
+                    String category_name = doc.select(".menuName").text().equals("") ? doc.getElementById("menuName").text() : doc.select(".menuName").text();
                     Elements articles = doc.select("tbody tr td .m_ltitle");
                     for(int i = 0; i < articles.size(); i++) {
                         Element e = articles.get(i);
@@ -77,8 +86,10 @@ public class Parser {
                         }
                         Parser.this.files.add(attachList);
                     }
+                    int max_num = Integer.parseInt(doc.getElementById("m_total").select("dd").text().replace("건", ""), 10);
+                    max_num = (int) Math.ceil((double) max_num / 10.0);
                     
-                    Parser.this.listener.onFinish(category_name, Parser.this.list, Parser.this.files);
+                    Parser.this.listener.onFinish(category_name, max_num, Parser.this.list, Parser.this.files);
                 } catch(Exception e) {
                     e.printStackTrace();
                     Parser.this.listener.onInternetError(e);

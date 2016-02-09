@@ -85,7 +85,7 @@ public class ListParser {
                 attachments.add(new FileData(file_title, file_hyperLink));
             }
             
-            articleList.add(new ArticleData(title,date, writer, hyperLink, visitorCount, isNotice, attachments));
+            articleList.add(new ArticleData(title, date, writer, hyperLink, visitorCount, isNotice, attachments));
         }
         
         return articleList;
@@ -93,71 +93,5 @@ public class ListParser {
     
     public int getTotalArticles() {
         return Integer.parseInt(doc.select(".m_total dd").first().text().replace("건", ""), 10);
-    }
-}
-
-class ArticleData {
-    final protected String title;
-    final protected String date;
-    final protected String writer;
-    final protected String hyperLink;
-    final protected int visitorCount;
-    final protected boolean isNotice;
-    final protected ArrayList<FileData> attachments;
-    
-    public ArticleData(String title, String date, String writer, String hyperLink, int visitorCount, boolean isNotice, ArrayList<FileData> attachments) {
-        this.title = title;
-        this.date = date;
-        this.writer = writer;
-        this.hyperLink = hyperLink;
-        this.visitorCount = visitorCount;
-        this.isNotice = isNotice;
-        this.attachments = attachments;
-    }
-    
-    public String getTitle() {
-        return this.title;
-    }
-    
-    public String getDate() {
-        return this.date;
-    }
-    
-    public String getWriter() {
-        return this.writer;
-    }
-    
-    public String getHyperLink() {
-        return this.hyperLink;
-    }
-    
-    public int getVisitors() {
-        return this.visitorCount;
-    }
-    
-    public boolean isNotice() {
-        return this.isNotice;
-    }
-    
-    public ArrayList<FileData> getAttachments() {
-        return this.attachments;
-    }
-}
-
-class FileData {
-    final protected String title;
-    final protected String hyperLink;
-    
-    public FileData(String title, String hyperLink) {
-        this.title = title;
-        this.hyperLink = hyperLink;
-    }
-    
-    public String getTitle() {
-        return this.title;
-    }
-    
-    public String getHyperLink() {
-        return this.hyperLink;
     }
 }

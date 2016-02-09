@@ -7,12 +7,26 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import android.util.Log;
+
 public class ListParser {
     final public static int CONNECT_TIMEOUT = 10;
     
     protected Document doc;
+    
+    /**
+     * 학교홈페이지의 URL
+     */
     protected String schoolUrl;
+    
+    /**
+     * 파싱하는 메뉴의 ID
+     */
     protected String menuId;
+    
+    /**
+     * 현재 페이지
+     */
     protected int currentPage;
     
     public ListParser(String schoolUrl, String menuId) {
@@ -41,6 +55,8 @@ public class ListParser {
     
     public void setCurrentPage(int page) {
         this.currentPage = page;
+        
+        connect();
     }
     
     public int getCurrentPage() {
@@ -49,6 +65,8 @@ public class ListParser {
     
     public void setMenuId(String menuId) {
         this.menuId = menuId;
+        
+        init();
     }
     
     public String getMenuId() {
@@ -57,6 +75,8 @@ public class ListParser {
     
     public void setSchoolUrl(String schoolUrl) {
         this.schoolUrl = schoolUrl;
+        
+        init();
     }
     
     public String getSchoolUrl() {
@@ -68,8 +88,11 @@ public class ListParser {
         ArrayList<ArticleData> articleList = new ArrayList<>();
         for(int i = 0; i < articles.size(); i++) {
             Element article = articles.get(i);
+            //if it is empty background
+            if(article.select("td").size() < 4)
+                continue;
             
-            Element titleData = article.select("td").get(1).select(".m_ltitle").first();
+            Element titleData = article.select("td").get(1).getElementsByClass("m_ltitle").first();
             boolean isNotice = titleData.select("a span").size() > 0;
             String date = article.select("td").get(3).text();
             String writer = article.select("td").get(2).text();
@@ -92,6 +115,23 @@ public class ListParser {
     }
     
     public int getTotalArticles() {
-        return Integer.parseInt(doc.select(".m_total dd").first().text().replace("건", ""), 10);
+        return Integer.parseInt(doc.getElementById("m_total").select("dd").first().text().replace("건", ""), 10);
+    }
+    
+    /**
+     * Caution; Slow Speed
+     */
+    public ArrayList<ArticleData> getAllArticles() {
+        int original_page = getCurrentPage();
+        int totalPages = (int) Math.ceil((double) getTotalArticles() / 10.0);
+        
+        ArrayList<ArticleData> result = new ArrayList<>();
+        for(int i = 1; i <= totalPages; i++) {
+            setCurrentPage(i);
+            result.addAll(getArticleList());
+        }
+        
+        setCurrentPage(original_page);
+        return result;
     }
 }

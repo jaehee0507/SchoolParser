@@ -8,6 +8,7 @@ public class MenuTitleParser {
     public static String getTitle(String schoolUrl, String menuId) throws IOException {
         Document doc = Jsoup.connect(schoolUrl+"/index.jsp").timeout(10*1000)
                         .data("mnu", menuId).get();
-        return doc.select(".menuName").text().equals("") ? doc.getElementById("menuName").text() : doc.select(".menuName span").text();
+        String title = doc.select("title").first().text();
+        return title.substring(0, title.indexOf("<")-1);
     }
 }

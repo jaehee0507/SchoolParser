@@ -120,14 +120,29 @@ public class ListParser {
             if(article.select("td").size() < 4)
                 continue;
             
-            Element titleData = article.select("td").get(1).getElementsByClass("m_ltitle").first();
+            Elements indexs = doc.select("thead tr th");
+            int titleData_i = 0, writer_i = 0, date_i = 0, visitorCount_i = 0;
+            for(int j = 0; j < indexs.size(); j++) {
+                if(indexs.get(j).text().equals("제 목"))
+                    titleData_i = j;
+                else if(indexs.get(j).text().equals("이 름"))
+                    writer_i = j;
+                else if(indexs.get(j).text().equals("날짜"))
+                    date_i = j;
+                else if(indexs.get(j).text().equals("조회"))
+                    visitorCount_i = j;
+                else
+                    continue;
+            }
+            
+            Element titleData = article.select("td").get(titleData_i).getElementsByClass("m_ltitle").first();
             boolean isNotice = titleData.select("a span").size() > 0;
             //if filtering notice is true and article is notice
             if((filterNotice && isNotice) || (currentPage > 1 && isNotice))
                 continue;
-            String date = article.select("td").get(3).text();
-            String writer = article.select("td").get(2).text();
-            int visitorCount = Integer.parseInt(article.select("td").get(4).text(), 10);
+            String date = article.select("td").get(date_i).text();
+            String writer = article.select("td").get(writer_i).text();
+            int visitorCount = Integer.parseInt(article.select("td").get(visitorCount_i).text(), 10);
             String title = !isNotice ? titleData.select("a").first().text() : titleData.select("a span").first().text();
             String hyperLink = titleData.select("a").first().attr("href");
             

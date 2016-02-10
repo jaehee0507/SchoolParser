@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
     
-    final private static String SCHOOL_URL = "http://cw.hs.kr";
-    
     protected LinearLayout mainContent;
     protected RecyclerView articles;
     protected SwipeRefreshLayout refresh;
@@ -79,8 +77,8 @@ public class MainActivity extends AppCompatActivity  {
             public void run() {
                 try {
                     ListParser parser = ListParser.getInstance()
-                                         .setSchoolUrl(SCHOOL_URL)
-                                         .setMenuId(ListParser.getInstance().getMenuId().equals("") ? SharedConstants.MENUS[0] : ListParser.getInstance().getMenuId())
+                                         .setSchoolUrl(SharedConstants.SCHOOL_URL)
+                                         .setMenuId(ListParser.getInstance().getMenuId().equals("") ? SharedConstants.MENUS.get(0) : ListParser.getInstance().getMenuId())
                                          .setFilteringNotice(true)
                                          .connect();
                     ArrayList<ArticleData> articleList = parser.getArticleList();
@@ -108,11 +106,11 @@ public class MainActivity extends AppCompatActivity  {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0; i < SharedConstants.MENUS.length; i++) {
+                for(int i = 0; i < SharedConstants.MENUS.size(); i++) {
                     final int index = i;
                     final StringBuffer buffer = new StringBuffer();
                     try {
-                        buffer.append(MenuTitleParser.getTitle(SCHOOL_URL, SharedConstants.MENUS[i]));
+                        buffer.append(MenuTitleParser.getTitle(SharedConstants.SCHOOL_URL, SharedConstants.MENUS.get(i)));
                     } catch(IOException e) {
                         buffer.append(getResources().getString(R.string.internet_error));
                     }
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity  {
                                     public boolean onMenuItemClick(MenuItem item) {
                                         refresh.setRefreshing(true);
                                         getSupportActionBar().setTitle(R.string.loading);
-                                        ListParser.getInstance().setMenuId(SharedConstants.MENUS[item.getItemId()]);
+                                        ListParser.getInstance().setMenuId(SharedConstants.MENUS.get(item.getItemId()));
                                         refresh();
                                         return true;
                                     }

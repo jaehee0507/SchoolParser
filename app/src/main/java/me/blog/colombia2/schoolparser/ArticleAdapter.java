@@ -15,59 +15,38 @@ import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import me.blog.colombia2.schoolparser.parser.*;
+import junit.framework.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
-    private MainActivity activity;
-    private ArrayList<String[]> data;
-    private ArrayList<ArrayList<String[]>> files;
-    private ArticleViewHolder lastSelectedHolder;
+    protected MainActivity activity;
+    protected ArrayList<ArticleData> articleData;
+    protected ArticleViewHolder lastSelectedHolder;
     
-    public ArticleAdapter(MainActivity activity, ArrayList<String[]> data, ArrayList<ArrayList<String[]>> files) {
+    public ArticleAdapter(MainActivity activity, ArrayList<ArticleData> articleData) {
         this.activity = activity;
-        this.data = data;
-        this.files = files;
+        this.articleData = articleData;
         this.lastSelectedHolder = null;
     }
 
     @Override
     public ArticleViewHolder onCreateViewHolder(ViewGroup p1, int p2) {
-        ArticleViewHolder v = new ArticleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.card_view, p1, false));
-        return v;
+        return new ArticleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.card_view, p1, false));
     }
 
     @Override
     public void onBindViewHolder(final ArticleViewHolder holder, final int position) {
-        if(position == data.size()-1) {
+        if(position == articleData.size()-1) {
             int fivedp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, activity.getResources().getDisplayMetrics());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(fivedp, fivedp, fivedp, fivedp);
             holder.card.setLayoutParams(params);
         }
-        String title = this.data.get(position)[0];
-        if(this.data.get(position)[3].equals("1")) {
-            title += " N";
-            SpannableStringBuilder builder = new SpannableStringBuilder(title);
-            Drawable icon = activity.getResources().getDrawable(R.drawable.newicon);
-            icon.setBounds(0, 0, holder.titleText.getLineHeight(), holder.titleText.getLineHeight());
-            builder.setSpan(new ImageSpan(icon, ImageSpan.ALIGN_BOTTOM) {
-                //From http://stackoverflow.com/a/31491580
-                public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-                    Drawable b = getDrawable();
-                    canvas.save();
-                    
-                    int transY = bottom - b.getBounds().bottom;
-                    transY -= paint.getFontMetricsInt().descent / 2;
-
-                    canvas.translate(x, transY);
-                    b.draw(canvas);
-                    canvas.restore();
-                }
-            }, title.length()-1, title.length(), SpannableStringBuilder.SPAN_INCLUSIVE_INCLUSIVE);
-            holder.titleText.setText(builder);
-        } else
-            holder.titleText.setText(title);
-        holder.dateText.setText(this.data.get(position)[2]);
         
+        final ArticleData article = articleData.get(position);
+        
+        holder.titleText.setText(article.getTitle());
+        holder.dateText.setText(article.getDate());
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +55,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
                 
                 if(!holder.selected) {
                     holder.openHolder();
-                    setContent(holder.loading, holder.content_text, data.get(position)[1]);
+                    setContent(holder.loading, holder.content_text, article.getHyperLink());
                     if(lastSelectedHolder != null)
                         lastSelectedHolder.closeHolder();
                     lastSelectedHolder = holder;
@@ -90,7 +69,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.content_gotourl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(data.get(position)[1]));
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(article.getHyperLink()));
                 activity.startActivity(i);
             }
         });
@@ -98,14 +77,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         holder.content_attachments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.changeActivity(files.get(position));
+                activity.changeActivity(article.getAttachments());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return this.data.size();
+        return this.articleData.size();
     }
     
     private void setContent(final AVLoadingIndicatorView loading, final TextView textview, final String url) {

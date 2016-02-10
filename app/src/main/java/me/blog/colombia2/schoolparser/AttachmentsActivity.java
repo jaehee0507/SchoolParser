@@ -14,6 +14,7 @@ import android.webkit.*;
 import android.widget.*;
 import java.io.*;
 import java.util.*;
+import me.blog.colombia2.schoolparser.parser.*;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;
@@ -25,11 +26,11 @@ public class AttachmentsActivity extends AppCompatActivity {
         
         views = new HashMap<>();
         
-        ArrayList<String[]> files = SharedConstants.ATTACHMENTS;
+        ArrayList<FileData> files = SharedConstants.ATTACHMENTS;
         LinearLayout layout = (LinearLayout) findViewById(R.id.content_layout);
-        for(String[] attach : files) {
+        for(FileData attach : files) {
             RelativeLayout checkbox = getCheckBoxLayout(attach);
-            views.put(checkbox, attach[1]);
+            views.put(checkbox, attach.getHyperLink());
             layout.addView(checkbox);
             View view = new View(this);
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
@@ -126,7 +127,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         });
     }
     
-    private RelativeLayout getCheckBoxLayout(String[] attach) {
+    private RelativeLayout getCheckBoxLayout(FileData attach) {
         RelativeLayout layout = new RelativeLayout(this);
         View progress = new View(this);
         progress.setId(1);
@@ -146,7 +147,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         states.addState(new int[]{android.R.attr.state_focused}, new ColorDrawable(Color.argb(0, 0, 0, 0)));
         states.addState(new int[]{}, new ColorDrawable(Color.argb(0, 0, 0, 0)));
         checkbox.setBackgroundDrawable(states);
-        checkbox.setText(attach[0]);
+        checkbox.setText(attach.getTitle());
         checkbox.setGravity(Gravity.LEFT|Gravity.CENTER);
         checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
                                                                                                              TypedValue.COMPLEX_UNIT_DIP,

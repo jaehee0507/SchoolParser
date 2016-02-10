@@ -1,16 +1,14 @@
 package me.blog.colombia2.schoolparser;
 
-import java.util.ArrayList;
+import java.util.*;
+import me.blog.colombia2.schoolparser.parser.*;
 
 public class SharedConstants {
-    public static ArrayList<String[]> ATTACHMENTS;
-    public static Parser PARSER;
-    public static int CURRENT_CATEGORY = 0;
-    public static String[] URLS = {
-        /*"/index.jsp?SCODE=S0000000543&mnu=M001002001"*/
-        "/index.jsp?SCODE=S0000000213&mnu=M001013",
-        "/index.jsp?SCODE=S0000000213&mnu=M001002003",
-        "/index.jsp?SCODE=S0000000213&mnu=M001004002",
-        "/index.jsp?SCODE=S0000000213&mnu=M001002004"
+    public static ArrayList<FileData> ATTACHMENTS;
+    public static String[] MENUS = {
+        "M001013",
+        "M001002003",
+        "M001004002",
+        "M001002004"
     };
 }

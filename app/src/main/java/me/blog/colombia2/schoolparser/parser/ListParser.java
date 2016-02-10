@@ -27,7 +27,12 @@ public class ListParser {
     /**
      * 현재 페이지
      */
-    protected int currentPage;
+    protected Integer currentPage;
+    
+    /**
+     * 공지 필터링
+     */
+    protected Boolean filterNotice;
     
     public ListParser(String schoolUrl, String menuId) {
         this.schoolUrl = schoolUrl;
@@ -37,9 +42,12 @@ public class ListParser {
     }
     
     protected void init() {
-        connect();
+        if(this.currentPage == null)
+            this.currentPage = 1;
+        if(this.filterNotice == null)
+            this.filterNotice = false;
         
-        this.currentPage = 1;
+        connect();
     }
 
     protected void connect() {
@@ -51,6 +59,14 @@ public class ListParser {
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public boolean isFilteringNotice() {
+        return this.filterNotice;
+    }
+    
+    public void setFilteringNotice(boolean filterNotice) {
+        this.filterNotice = filterNotice;
     }
     
     public void setCurrentPage(int page) {
@@ -94,6 +110,9 @@ public class ListParser {
             
             Element titleData = article.select("td").get(1).getElementsByClass("m_ltitle").first();
             boolean isNotice = titleData.select("a span").size() > 0;
+            //if filtering notice is true and article is notice
+            if((filterNotice && isNotice) || (currentPage > 1 && isNotice))
+                continue;
             String date = article.select("td").get(3).text();
             String writer = article.select("td").get(2).text();
             int visitorCount = Integer.parseInt(article.select("td").get(4).text(), 10);
@@ -105,10 +124,10 @@ public class ListParser {
             for(Element file : attachElems) {
                 String file_title = file.attr("title").replace(" 첨부파일 다운받기", "");
                 String file_hyperLink = file.attr("href");
-                attachments.add(new FileData(file_title, file_hyperLink));
+                attachments.add(new FileData(file_title, schoolUrl+file_hyperLink));
             }
             
-            articleList.add(new ArticleData(title, date, writer, hyperLink, visitorCount, isNotice, attachments));
+            articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, attachments));
         }
         
         return articleList;
@@ -116,6 +135,10 @@ public class ListParser {
     
     public int getTotalArticles() {
         return Integer.parseInt(doc.getElementById("m_total").select("dd").first().text().replace("건", ""), 10);
+    }
+    
+    public String getTitle() {
+        return doc.select(".menuName").text().equals("") ? doc.getElementById("menuName").text() : doc.select(".menuName span").text();
     }
     
     /**

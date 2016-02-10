@@ -18,16 +18,5 @@
 	        android:layout_height="match_parent"/>
     
     </android.support.v4.widget.SwipeRefreshLayout>
-    
-    <Button
-        android:id="@+id/page"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:singleLine="true"
-        android:gravity="center"
-        android:textSize="16dp"
-        android:textColor="#ffffff"
-        android:background="#212121"
-        android:text="1/1"/>
 
 </LinearLayout>

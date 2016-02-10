@@ -55,17 +55,12 @@ public class ListParser {
             this.filterNotice = false;
     }
 
-    public ListParser connect() {
-        try {
-            doc = Jsoup.connect(schoolUrl + "/index.jsp")
+    public ListParser connect() throws IOException {
+        doc = Jsoup.connect(schoolUrl + "/index.jsp")
                 .timeout(CONNECT_TIMEOUT * 1000)
                 .data("mnu", menuId)
                 .data("page", currentPage + "").get();
-        } catch(IOException e) {
-            e.printStackTrace();
-        } finally {
-            return this;
-        }
+        return this;
     }
     
     public boolean isFilteringNotice() {
@@ -154,8 +149,8 @@ public class ListParser {
         return Integer.parseInt(doc.getElementById("m_total").select("dd").first().text().replace("건", ""), 10);
     }
     
-    public String getTitle() {
-        return doc.select(".menuName").text().equals("") ? doc.getElementById("menuName").text() : doc.select(".menuName span").text();
+    public String getTitle() throws IOException {
+        return MenuTitleParser.getTitle(schoolUrl, menuId);
     }
     
     /**

@@ -9,24 +9,8 @@
         app:showAsAction="always"
         android:orderInCategory="0">
         
-        <menu>
-            <item
-                android:id="@+id/categories_1"
-                android:title="합격자 공지사항"/>
+        <menu/>
             
-            <item
-                android:id="@+id/categories_2"
-                android:title="공지사항"/>
-            
-            <item
-                android:id="@+id/categories_3"
-                android:title="가정통신문"/>
-            
-            <item
-                android:id="@+id/categories_4"
-                android:title="학교소식"/>
-        </menu>
-        
     </item>
     
 </menu>

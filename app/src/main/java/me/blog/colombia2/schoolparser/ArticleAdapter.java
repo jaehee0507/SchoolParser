@@ -1,22 +1,17 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
 import android.net.*;
 import android.support.v7.widget.*;
-import android.text.*;
-import android.text.style.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
 import com.wang.avi.*;
 import java.util.*;
+import me.blog.colombia2.schoolparser.parser.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import me.blog.colombia2.schoolparser.parser.*;
-import junit.framework.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     protected MainActivity activity;

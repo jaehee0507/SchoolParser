@@ -5,6 +5,7 @@ import android.util.*;
 import android.view.*;
 import android.widget.*;
 import com.wang.avi.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected TextView titleText;

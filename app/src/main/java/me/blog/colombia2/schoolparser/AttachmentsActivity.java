@@ -15,6 +15,7 @@ import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;

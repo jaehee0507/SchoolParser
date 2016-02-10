@@ -1,4 +1,4 @@
-package me.blog.colombia2.schoolparser;
+package me.blog.colombia2.schoolparser.utils;
 
 import android.view.*;
 import android.view.animation.*;
@@ -9,7 +9,7 @@ public class ResizeAnimation extends Animation {
     private int endWidth;
     private int startHeight;
     private int endHeight;
-    
+
     public ResizeAnimation(View view, int endWidth, int endHeight) {
         this.view = view;
         this.startWidth = view.getWidth();

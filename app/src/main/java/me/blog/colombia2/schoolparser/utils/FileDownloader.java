@@ -1,4 +1,4 @@
-package me.blog.colombia2.schoolparser;
+package me.blog.colombia2.schoolparser.utils;
 
 import java.io.*;
 import java.net.*;

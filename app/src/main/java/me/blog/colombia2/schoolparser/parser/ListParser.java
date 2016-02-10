@@ -1,16 +1,13 @@
 package me.blog.colombia2.schoolparser.parser;
 
-import org.jsoup.*;
-import org.jsoup.select.*;
-import org.jsoup.nodes.*;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.*;
-
-import android.util.Log;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
+import org.jsoup.select.*;
 
 public class ListParser {
-    final public static int CONNECT_TIMEOUT = 10;
+    final private static int CONNECT_TIMEOUT = 10;
     
     protected Document doc;
     
@@ -34,23 +31,31 @@ public class ListParser {
      */
     protected Boolean filterNotice;
     
-    public ListParser(String schoolUrl, String menuId) {
-        this.schoolUrl = schoolUrl;
-        this.menuId = menuId;
-        
+    /**
+     * Singleton patterned Object
+     */
+    private static ListParser singleton_instance = new ListParser();
+    
+    private ListParser() {
         init();
     }
     
+    public static ListParser getInstance() {
+        return singleton_instance;
+    }
+    
     protected void init() {
+        if(this.schoolUrl == null)
+            this.schoolUrl = "";
+        if(this.menuId == null)
+            this.menuId = "";
         if(this.currentPage == null)
             this.currentPage = 1;
         if(this.filterNotice == null)
             this.filterNotice = false;
-        
-        connect();
     }
 
-    protected void connect() {
+    public ListParser connect() {
         try {
             doc = Jsoup.connect(schoolUrl + "/index.jsp")
                 .timeout(CONNECT_TIMEOUT * 1000)
@@ -58,6 +63,8 @@ public class ListParser {
                 .data("page", currentPage + "").get();
         } catch(IOException e) {
             e.printStackTrace();
+        } finally {
+            return this;
         }
     }
     
@@ -65,34 +72,44 @@ public class ListParser {
         return this.filterNotice;
     }
     
-    public void setFilteringNotice(boolean filterNotice) {
+    public ListParser setFilteringNotice(boolean filterNotice) {
         this.filterNotice = filterNotice;
+        
+        init();
+        
+        return this;
     }
     
-    public void setCurrentPage(int page) {
+    public ListParser setCurrentPage(int page) {
         this.currentPage = page;
         
-        connect();
+        init();
+        
+        return this;
     }
     
     public int getCurrentPage() {
         return this.currentPage;
     }
     
-    public void setMenuId(String menuId) {
+    public ListParser setMenuId(String menuId) {
         this.menuId = menuId;
         
         init();
+        
+        return this;
     }
     
     public String getMenuId() {
         return this.menuId;
     }
     
-    public void setSchoolUrl(String schoolUrl) {
+    public ListParser setSchoolUrl(String schoolUrl) {
         this.schoolUrl = schoolUrl;
         
         init();
+        
+        return this;
     }
     
     public String getSchoolUrl() {

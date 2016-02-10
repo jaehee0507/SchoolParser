@@ -9,6 +9,7 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class MainActivity extends AppCompatActivity  {
     private class MyScrollListener extends RecyclerView.OnScrollListener {
@@ -35,7 +36,6 @@ public class MainActivity extends AppCompatActivity  {
     protected RecyclerView articles;
     protected SwipeRefreshLayout refresh;
     
-    protected ListParser parser;
     protected Handler handler;
     
     @Override
@@ -73,8 +73,11 @@ public class MainActivity extends AppCompatActivity  {
         
         new Thread(new Runnable() {
             public void run() {
-                parser = new ListParser("http://cw.hs.kr", SharedConstants.MENUS[0]);
-                parser.setFilteringNotice(true);
+                ListParser parser = ListParser.getInstance()
+                         .setSchoolUrl("http://cw.hs.kr")
+                         .setMenuId(ListParser.getInstance().getMenuId().equals("") ? SharedConstants.MENUS[0] : ListParser.getInstance().getMenuId())
+                         .setFilteringNotice(true)
+                         .connect();
                 ArrayList<ArticleData> articleList = parser.getArticleList();
                 final ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, articleList);
                 final String menuName = parser.getTitle();
@@ -110,22 +113,22 @@ public class MainActivity extends AppCompatActivity  {
             public void run() {
                 switch(item.getItemId()) {
                     case R.id.categories_1:
-                        parser.setMenuId(SharedConstants.MENUS[0]);
+                        ListParser.getInstance().setMenuId(SharedConstants.MENUS[0]);
                         refresh();
                         break;
                  
                     case R.id.categories_2:
-                        parser.setMenuId(SharedConstants.MENUS[1]);
+                        ListParser.getInstance().setMenuId(SharedConstants.MENUS[1]);
                         refresh();
                         break;
                 
                     case R.id.categories_3:
-                        parser.setMenuId(SharedConstants.MENUS[2]);
+                        ListParser.getInstance().setMenuId(SharedConstants.MENUS[2]);
                         refresh();
                         break;
                 
                     case R.id.categories_4:
-                        parser.setMenuId(SharedConstants.MENUS[3]);
+                        ListParser.getInstance().setMenuId(SharedConstants.MENUS[3]);
                         refresh();
                         break;
                 }
@@ -138,9 +141,9 @@ public class MainActivity extends AppCompatActivity  {
     protected void refresh() {
         new Thread(new Runnable() {
             public void run() {
-                ArrayList<ArticleData> articleList = parser.getArticleList();
+                ArrayList<ArticleData> articleList = ListParser.getInstance().connect().getArticleList();
                 final ArticleAdapter adapter = new ArticleAdapter(MainActivity.this, articleList);
-                final String menuName = parser.getTitle();
+                final String menuName = ListParser.getInstance().getTitle();
                 handler.post(new Runnable() {
                      @Override
                      public void run() {

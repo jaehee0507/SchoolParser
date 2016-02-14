@@ -4,19 +4,18 @@ import android.support.v7.widget.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
-import com.wang.avi.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected TextView titleText;
     protected TextView dateText;
     protected LinearLayout content;
-    protected AVLoadingIndicatorView loading;
+    protected ProgressBar loading;
     protected TextView content_text;
     protected Button content_gotourl;
     protected Button content_attachments;
     protected CardView card;
-    protected boolean selected;
+    protected boolean opened;
     
     public ArticleViewHolder(View itemView) {
         super(itemView);
@@ -24,28 +23,32 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         dateText  = (TextView) itemView.findViewById(R.id.date);
         content   = (LinearLayout) itemView.findViewById(R.id.content);
         card      = (CardView) itemView;
-        selected  = false;
+        opened    = false;
         
         content_text        = (TextView) content.findViewById(R.id.content_text);
         content_gotourl     = (Button) content.findViewById(R.id.gotourl);
         content_attachments = (Button) content.findViewById(R.id.attachments);
         
-        loading = (AVLoadingIndicatorView) itemView.findViewById(R.id.loading);
+        loading = (ProgressBar) itemView.findViewById(R.id.loading);
     }
     
-    public void openHolder() {
+    public void openHolder(boolean anima) {
         int target = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, content.getContext().getResources().getDisplayMetrics());
         ResizeAnimation anim = new ResizeAnimation(content, -1, target);
-        anim.setDuration(300);
+        anim.setDuration(anima ? 300 : 0);
         content.startAnimation(anim);
-        selected = true;
+        opened = true;
     }
     
-    public void closeHolder() {
+    public void closeHolder(boolean anima) {
         int target = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, content.getContext().getResources().getDisplayMetrics());
         ResizeAnimation anim = new ResizeAnimation(content, -1, target);
-        anim.setDuration(300);
+        anim.setDuration(anima ? 300 : 0);
         content.startAnimation(anim);
-        selected = false;
+        opened = false;
+    }
+    
+    public boolean isOpened() {
+        return opened;
     }
 }

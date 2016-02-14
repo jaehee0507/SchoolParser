@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SchoolParser</string>
+    <string name="app_name">청원고등학교</string>
     <string name="internet_error">인터넷 오류</string>
     <string name="check_internet">인터넷을 확인해주세요.</string>
     <string name="goto_url">이 게시글 열기</string>
     <string name="attachments">첨부파일 확인</string>
     <string name="attachments_down">첨부파일 다운로드</string>
     <string name="retry">재시도</string>
-    <string name="select_all">전체선택</string>
+    <string name="select_all">전체 선택</string>
+    <string name="deselect_all">선택 해제</string>
     <string name="loading">불러오는 중...</string>
     <string name="settings">환경설정</string>
     <string name="categories">게시판 설정</string>
+    <string name="finish">완료</string>
+    <string name="menu_select">게시판 선택</string>
 
 </resources>

@@ -7,10 +7,5 @@ public class SharedConstants {
     public static ArrayList<FileData> ATTACHMENTS;
     public static String SCHOOL_URL = "http://cw.hs.kr";
     public static ArrayList<String> MENUS = new ArrayList<>();
-    static {
-        MENUS.add("M001013");
-        MENUS.add("M001002003");
-        MENUS.add("M001004002");
-        MENUS.add("M001002004");
-    }
+    public static ArrayList<String> MENU_NAMES = new ArrayList<>();
 }

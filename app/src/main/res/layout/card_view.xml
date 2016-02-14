@@ -5,11 +5,11 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="0dp">
+    card_view:cardCornerRadius="2dp">
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,15 +48,12 @@
                     android:paddingRight="4dp"
                     android:textColor="#909090"
                     android:textSize="11dp"/>
-                
-                <com.wang.avi.AVLoadingIndicatorView
+                    
+                <ProgressBar
                     android:id="@+id/loading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="visible"
-                    app:indicator="BallPulse"
-                    app:indicator_color="#a0a0a0"/>
+                    android:layout_centerInParent="true"/>
             
             </RelativeLayout>
             

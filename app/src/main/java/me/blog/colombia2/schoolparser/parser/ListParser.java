@@ -9,6 +9,8 @@ import org.jsoup.select.*;
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
     
+    private boolean isLoading = false;
+    
     protected Document doc;
     
     /**
@@ -56,10 +58,16 @@ public class ListParser {
     }
 
     public ListParser connect() throws IOException {
+        if(isLoading)
+            return this;
+            
+        isLoading = true;
         doc = Jsoup.connect(schoolUrl + "/index.jsp")
                 .timeout(CONNECT_TIMEOUT * 1000)
                 .data("mnu", menuId)
                 .data("page", currentPage + "").get();
+        isLoading = false;
+        
         return this;
     }
     
@@ -112,8 +120,12 @@ public class ListParser {
     }
 
     public ArrayList<ArticleData> getArticleList() {
-        Elements articles = doc.select("tbody tr");
         ArrayList<ArticleData> articleList = new ArrayList<>();
+        //if it is not articles-in-it form
+        if(doc.select("thead tr th").size() == 0)
+            return articleList;
+        
+        Elements articles = doc.select("tbody tr");
         for(int i = 0; i < articles.size(); i++) {
             Element article = articles.get(i);
             //if it is empty background
@@ -162,6 +174,10 @@ public class ListParser {
     
     public int getTotalArticles() {
         return Integer.parseInt(doc.getElementById("m_total").select("dd").first().text().replace("건", ""), 10);
+    }
+    
+    public int getMaxPage() {
+        return (int) Math.ceil((double) getTotalArticles() / 10.0);
     }
     
     public String getTitle() throws IOException {

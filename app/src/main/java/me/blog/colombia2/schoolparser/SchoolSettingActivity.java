@@ -19,14 +19,16 @@ public class SchoolSettingActivity extends AppCompatActivity {
     protected LinearLayout menulist;
     
     protected HashMap<String, String> menus;
+    protected SharedConstants constants;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        constants = SharedConstants.getInstance();
         super.onCreate(savedInstanceState);
         SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
         if(!pref.getString("menulist", "null").equals("null")) {
-            SharedConstants.MENUS = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));
-            SharedConstants.MENU_NAMES = new ArrayList<String>(Arrays.asList(pref.getString("menunames", "").split(";")));
+            constants.MENUS = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));
+            constants.MENU_NAMES = new ArrayList<String>(Arrays.asList(pref.getString("menunames", "").split(";")));
             
             changeActivity();
             return;
@@ -49,7 +51,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    menus = MenuTitleParser.getAllMenus(SharedConstants.SCHOOL_URL);
+                    menus = MenuTitleParser.getAllMenus(constants.SCHOOL_URL);
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -67,27 +69,27 @@ public class SchoolSettingActivity extends AppCompatActivity {
         bottomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedConstants.MENUS.clear();
-                SharedConstants.MENU_NAMES.clear();
+                constants.MENUS.clear();
+                constants.MENU_NAMES.clear();
                     
                 int checkedCount = 0;
                 for(int i = 0; i < menulist.getChildCount(); i++) {
                     CheckBox child = (CheckBox) menulist.getChildAt(i);
                     if(child.isChecked()) {
                         checkedCount++;
-                        SharedConstants.MENUS.add(menus.get(child.getText().toString()));
-                        SharedConstants.MENU_NAMES.add(child.getText().toString());
+                        constants.MENUS.add(menus.get(child.getText().toString()));
+                        constants.MENU_NAMES.add(child.getText().toString());
                     }
                 }
                 
                 if(checkedCount > 0) {
                     StringBuilder menulist = new StringBuilder();
                     StringBuilder menunames = new StringBuilder();
-                    for(int i = 0; i < SharedConstants.MENUS.size(); i++) {
-                        menulist.append(SharedConstants.MENUS.get(i)).append(";");
-                        menunames.append(SharedConstants.MENU_NAMES.get(i)).append(";");
+                    for(int i = 0; i < constants.MENUS.size(); i++) {
+                        menulist.append(constants.MENUS.get(i)).append(";");
+                        menunames.append(constants.MENU_NAMES.get(i)).append(";");
                     }
-                    SharedPreferences.Editor edit = getSharedPreferences("schoolData", Context.MODE_PRIVATE).edit();
+                    SharedPreferences.Editor edit = getSharedPreferences("schoolData", MODE_PRIVATE).edit();
                     edit.putString("menulist", menulist.toString());
                     edit.putString("menunames", menunames.toString());
                     edit.commit();

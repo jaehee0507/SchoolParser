@@ -31,17 +31,8 @@ public class ListParser {
      */
     protected Boolean filterNotice;
     
-    /**
-     * Singleton patterned Object
-     */
-    private static ListParser singleton_instance = new ListParser();
-    
-    private ListParser() {
+    public ListParser() {
         init();
-    }
-    
-    public static ListParser getInstance() {
-        return singleton_instance;
     }
     
     protected void init() {

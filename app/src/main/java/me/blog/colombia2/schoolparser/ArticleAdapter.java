@@ -12,14 +12,16 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 import android.graphics.*;
+import me.blog.colombia2.schoolparser.tab.*;
+import android.support.v4.app.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    protected MainActivity activity;
+    protected ArticlePageFragment fragment;
     protected ArrayList<ArticleData> articleData;
     protected boolean loading;
     
-    public ArticleAdapter(MainActivity activity, ArrayList<ArticleData> articleData) {
-        this.activity = activity;
+    public ArticleAdapter(ArticlePageFragment fragment, ArrayList<ArticleData> articleData) {
+        this.fragment = fragment;
         this.articleData = articleData;
         this.loading = false;
     }
@@ -56,7 +58,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(activity.refresh.isRefreshing())
+                    if(fragment.refresh.isRefreshing())
                         return;
                     
                     if(holder.isOpened())
@@ -78,14 +80,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(article.getHyperLink()));
-                    activity.startActivity(i);
+                    fragment.main.startActivity(i);
                 }
             });
         
             holder.content_attachments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.changeActivity(article.getAttachments());
+                 //   activity.changeActivity(article.getAttachments());
                 }
             });
         } else if(a instanceof LoadMoreHolder) {
@@ -111,7 +113,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         public void run() {
                             final int orgin_size = articleData.size();
                             try {
-                                ListParser parser = ListParser.getInstance();
+                                final ListParser parser = fragment.parser;
                                 parser.setCurrentPage(parser.getCurrentPage() + 1)
                                       .connect();
                                 final ArrayList<ArticleData> arr = parser.getArticleList();
@@ -124,7 +126,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                         loading = false;
                                         articleData.remove(orgin_size-1);
                                         notifyItemRemoved(orgin_size-1);
-                                        if(ListParser.getInstance().getMaxPage() > ListParser.getInstance().getCurrentPage()) {
+                                        if(parser.getMaxPage() > parser.getCurrentPage()) {
                                             articleData.add(null);
                                             notifyItemInserted(articleData.size());
                                         }

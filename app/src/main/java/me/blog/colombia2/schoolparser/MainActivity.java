@@ -1,56 +1,68 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
-import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
+import android.support.v4.view.*;
 import android.support.v4.widget.*;
 import android.support.v7.app.*;
 import android.support.v7.widget.*;
 import android.view.*;
 import android.widget.*;
-import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
-public class MainActivity extends AppCompatActivity  {
-    private class MyScrollListener extends RecyclerView.OnScrollListener {
-        public MyScrollListener() {
-            super();
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            refresh.setEnabled(!recyclerView.canScrollVertically(-1));
-        }
-    }
+public class MainActivity extends AppCompatActivity {
+    protected ViewPager viewPager;
+    protected MenuPagerAdapter adapter;
+    protected TabLayout tabLayout;
     
-    protected LinearLayout mainContent;
-    protected RecyclerView articles;
-    protected SwipeRefreshLayout refresh;
-    
-    protected ArrayList<ArticleData> articleList;
-    protected ArticleAdapter adapter;
+    protected SharedConstants constants;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        constants = SharedConstants.getInstance();
         super.onCreate(savedInstanceState);
-        if(SharedConstants.MENUS.size() == 0) {
+        if(SharedConstants.getInstance().MENUS.size() == 0) {
             Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
             startActivity(i);
             
             finish();
         }
-        setContentView(R.layout.main);
+        setContentView(R.layout.mainpage);
         
-        getSupportActionBar().setTitle(R.string.loading);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        adapter = new MenuPagerAdapter(getSupportFragmentManager());
+        
+        for(int i = 0; i < constants.MENUS.size(); i++)
+            adapter.addFragment(new ArticlePageFragment(constants.SCHOOL_URL, constants.MENUS.get(i), this), constants.MENU_NAMES.get(i));
+        
+        viewPager.setAdapter(adapter);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                getSupportActionBar().setTitle(tab.getText());
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+        
+        getSupportActionBar().setTitle(adapter.getPageTitle(viewPager.getCurrentItem()));
+        
+        
+        /*getSupportActionBar().setTitle(R.string.loading);
         
         mainContent = (LinearLayout) findViewById(R.id.maincontent);
 
@@ -94,7 +106,7 @@ public class MainActivity extends AppCompatActivity  {
             dialog.show();
         } else {
             startParser();
-        }
+        }*/
     }
     
     @Override
@@ -111,13 +123,12 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
         final SubMenu sub = menu.getItem(0).getSubMenu();
-        for(int i = 0; i < SharedConstants.MENUS.size(); i++)
-            sub.add(0, i, Menu.NONE, SharedConstants.MENU_NAMES.get(i))
+        for(int i = 0; i < constants.MENUS.size(); i++)
+            sub.add(0, i, Menu.NONE, constants.MENU_NAMES.get(i))
                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                    @Override
                    public boolean onMenuItemClick(MenuItem item) {
-                       ListParser.getInstance().setMenuId(SharedConstants.MENUS.get(item.getItemId()));
-                       refresh();
+                       viewPager.setCurrentItem(item.getItemId());
                        return true;
                    }
                });
@@ -125,7 +136,7 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
     
-    protected void showInternetError() {
+    /*protected void showInternetError() {
         refresh.setRefreshing(false);
         articles.setAdapter(null);
         final Snackbar snackbar = Snackbar.make(mainContent, R.string.check_internet, Snackbar.LENGTH_INDEFINITE);
@@ -232,4 +243,5 @@ public class MainActivity extends AppCompatActivity  {
             super.onPostExecute(result);
         }
     }
+    */
 }

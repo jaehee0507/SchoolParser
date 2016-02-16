@@ -4,8 +4,16 @@ import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 
 public class SharedConstants {
-    public static ArrayList<FileData> ATTACHMENTS;
-    public static String SCHOOL_URL = "http://cw.hs.kr";
-    public static ArrayList<String> MENUS = new ArrayList<>();
-    public static ArrayList<String> MENU_NAMES = new ArrayList<>();
+    public ArrayList<FileData> ATTACHMENTS;
+    public String SCHOOL_URL = "http://cw.hs.kr";
+    public ArrayList<String> MENUS = new ArrayList<>();
+    public ArrayList<String> MENU_NAMES = new ArrayList<>();
+    
+    private static SharedConstants instance = new SharedConstants();
+    
+    public static SharedConstants getInstance() {
+        return instance;
+    }
+    
+    private SharedConstants() { }
 }

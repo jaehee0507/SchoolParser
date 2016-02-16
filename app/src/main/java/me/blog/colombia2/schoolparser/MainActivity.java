@@ -1,6 +1,7 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v4.widget.*;
@@ -12,7 +13,6 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.util.*;
 
 public class MainActivity extends AppCompatActivity  {
     private class MyScrollListener extends RecyclerView.OnScrollListener {
@@ -53,14 +53,14 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setTitle(R.string.loading);
         
         mainContent = (LinearLayout) findViewById(R.id.maincontent);
-        
+
         articles = (RecyclerView) findViewById(R.id.articles);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         articles.setLayoutManager(llm);
         articles.setHasFixedSize(true);
         articles.setOnScrollListener(new MyScrollListener());
-        
+
         refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -69,8 +69,32 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
         
-        ParserAsyncTask asyncTask = new ParserAsyncTask();
-        asyncTask.execute(SharedConstants.SCHOOL_URL, SharedConstants.MENUS.get(0));
+        SharedPreferences appData = getSharedPreferences("appData", MODE_PRIVATE);
+        boolean cautionIgnore = appData.getBoolean("cautionIgnore", false);
+        if(isMobileNetwork() && !cautionIgnore) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("주의");
+            builder.setMessage("3G/LTE와 같은 모바일 네트워크 환경에서 이용 시 과다 데이터 부과요금이 발생할 수 있습니다.");
+            builder.setPositiveButton("확인", null);
+            builder.setNegativeButton("다시 보지 않기", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface d, int i) {
+                    SharedPreferences.Editor edit = getSharedPreferences("appData", MODE_PRIVATE).edit();
+                    edit.putBoolean("cautionIgnore", true);
+                    edit.commit();
+                }
+            });
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    startParser();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            startParser();
+        }
     }
     
     @Override
@@ -118,6 +142,16 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setTitle(R.string.internet_error);
     }
     
+    protected void startParser() {
+        SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
+        if(!pref.getString("menulist", "null").equals("null")) {
+            SharedConstants.MENUS = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));
+            SharedConstants.MENU_NAMES = new ArrayList<String>(Arrays.asList(pref.getString("menunames", "").split(";")));
+        }
+        ParserAsyncTask asyncTask = new ParserAsyncTask();
+        asyncTask.execute(SharedConstants.SCHOOL_URL, SharedConstants.MENUS.get(0));
+    }
+    
     protected void refresh() {
         ParserAsyncTask asyncTask = new ParserAsyncTask();
         asyncTask.execute(SharedConstants.SCHOOL_URL, ListParser.getInstance().getMenuId());
@@ -127,6 +161,17 @@ public class MainActivity extends AppCompatActivity  {
         Intent i = new Intent(MainActivity.this, AttachmentsActivity.class);
         SharedConstants.ATTACHMENTS = files;
         startActivity(i);
+    }
+    
+    public boolean isMobileNetwork() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
+        if(isConnected) {
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return true;
+        }
+        return false;
     }
     
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
@@ -152,7 +197,7 @@ public class MainActivity extends AppCompatActivity  {
                                     .setCurrentPage(1)
                                     .setSchoolUrl(params[0])
                                     .setMenuId(params[1])
-                                    .setFilteringNotice(true)
+                                    //.setFilteringNotice(true)
                                     .connect();
                 menuName = parser.getTitle();
                 articleList = parser.getArticleList();

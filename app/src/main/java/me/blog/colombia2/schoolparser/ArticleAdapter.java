@@ -11,6 +11,7 @@ import me.blog.colombia2.schoolparser.parser.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import android.graphics.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected MainActivity activity;
@@ -66,6 +67,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
+            
+            if(article.isNotice()) {
+                holder.card.setCardBackgroundColor(Color.parseColor("#FF8A65"));
+            } else {
+                holder.card.setCardBackgroundColor(Color.WHITE);
+            }
         
             holder.content_gotourl.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -123,8 +130,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                         }
                                     }
                                 });
-                            } catch(Exception e) {
-                                
+                            } catch(IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }).start();

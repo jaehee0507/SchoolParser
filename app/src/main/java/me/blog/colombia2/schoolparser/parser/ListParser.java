@@ -9,8 +9,6 @@ import org.jsoup.select.*;
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
     
-    private boolean isLoading = false;
-    
     protected Document doc;
     
     /**
@@ -58,15 +56,10 @@ public class ListParser {
     }
 
     public ListParser connect() throws IOException {
-        if(isLoading)
-            return this;
-            
-        isLoading = true;
         doc = Jsoup.connect(schoolUrl + "/index.jsp")
-                .timeout(CONNECT_TIMEOUT * 1000)
-                .data("mnu", menuId)
-                .data("page", currentPage + "").get();
-        isLoading = false;
+                   .timeout(CONNECT_TIMEOUT * 1000)
+                   .data("mnu", menuId)
+                   .data("page", currentPage + "").get();
         
         return this;
     }
@@ -148,6 +141,8 @@ public class ListParser {
             }
             
             Element titleData = article.select("td").get(titleData_i).getElementsByClass("m_ltitle").first();
+            if(titleData.text().indexOf("게시물이 삭제되었습니다") >= 0)
+                continue;
             boolean isNotice = titleData.select("a span").size() > 0;
             //if filtering notice is true and article is notice
             if((filterNotice && isNotice) || (currentPage > 1 && isNotice))
@@ -189,7 +184,7 @@ public class ListParser {
      */
     public ArrayList<ArticleData> getAllArticles() {
         int original_page = getCurrentPage();
-        int totalPages = (int) Math.ceil((double) getTotalArticles() / 10.0);
+        int totalPages = getMaxPage();
         
         ArrayList<ArticleData> result = new ArrayList<>();
         for(int i = 1; i <= totalPages; i++) {

@@ -1,6 +1,7 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.graphics.*;
 import android.net.*;
 import android.os.*;
 import android.support.v7.widget.*;
@@ -8,12 +9,11 @@ import android.view.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.tab.*;
+import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import android.graphics.*;
-import me.blog.colombia2.schoolparser.tab.*;
-import android.support.v4.app.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -80,14 +80,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(article.getHyperLink()));
-                    fragment.main.startActivity(i);
+                    MainActivity.instance.startActivity(i);
                 }
             });
         
             holder.content_attachments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                 //   activity.changeActivity(article.getAttachments());
+                    SharedConstants.getInstance().ATTACHMENTS = article.getAttachments();
+                    Intent i = new Intent(MainActivity.instance, AttachmentsActivity.class);
+                    MainActivity.instance.startActivity(i);
                 }
             });
         } else if(a instanceof LoadMoreHolder) {

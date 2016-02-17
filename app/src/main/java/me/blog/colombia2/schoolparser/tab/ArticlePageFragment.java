@@ -11,19 +11,22 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.utils.*;
+import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
     
     public ListParser parser;
     public SwipeRefreshLayout refresh;
-    public AppCompatActivity main;
     
-    public ArticlePageFragment(String url, String menuId, AppCompatActivity activity) {
+    public ArticlePageFragment() {
         this.parser = new ListParser()
-                    .setSchoolUrl(url)
-                    .setMenuId(menuId);
-        this.main = activity;
+                    .setSchoolUrl(SharedConstants.getInstance().SCHOOL_URL);
+    }
+    
+    public void setMenuId(String menuId) {
+        this.parser.setMenuId(menuId);
     }
 
     @Override
@@ -52,7 +55,6 @@ public class ArticlePageFragment extends Fragment {
     }
     
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
-        private String menuName;
         private ArrayList<ArticleData> articleList;
         private ArticleAdapter adapter;
 
@@ -72,7 +74,6 @@ public class ArticlePageFragment extends Fragment {
         protected Integer doInBackground(String... params) {
             try {
                 parser.setCurrentPage(1).connect();
-                menuName = parser.getTitle();
                 articleList = parser.getArticleList();
                 adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
                 if(parser.getMaxPage() > 1) {

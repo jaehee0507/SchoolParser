@@ -15,15 +15,17 @@ import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class MainActivity extends AppCompatActivity {
-    protected ViewPager viewPager;
     protected MenuPagerAdapter adapter;
     protected TabLayout tabLayout;
-    
     protected SharedConstants constants;
+    public ViewPager viewPager;
+    
+    public static MainActivity instance;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         constants = SharedConstants.getInstance();
+        instance = this;
         super.onCreate(savedInstanceState);
         if(SharedConstants.getInstance().MENUS.size() == 0) {
             Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
@@ -39,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
         
-        for(int i = 0; i < constants.MENUS.size(); i++)
-            adapter.addFragment(new ArticlePageFragment(constants.SCHOOL_URL, constants.MENUS.get(i), this), constants.MENU_NAMES.get(i));
+        for(int i = 0; i < constants.MENUS.size(); i++) {
+            ArticlePageFragment frag = new ArticlePageFragment();
+            frag.setMenuId(constants.MENUS.get(i));
+            adapter.addFragment(frag, constants.MENU_NAMES.get(i));
+        }
         
         viewPager.setAdapter(adapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 getSupportActionBar().setTitle(tab.getText());
                 viewPager.setCurrentItem(tab.getPosition());
+                tab.select();
             }
             
             @Override
@@ -128,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                    @Override
                    public boolean onMenuItemClick(MenuItem item) {
+                       TabLayout.Tab tab = tabLayout.getTabAt(item.getItemId());
+                       tab.select();
                        viewPager.setCurrentItem(item.getItemId());
                        return true;
                    }

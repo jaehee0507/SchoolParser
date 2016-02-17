@@ -33,8 +33,10 @@ public class SchoolSettingActivity extends AppCompatActivity {
             changeActivity();
             return;
         }
-        
         setContentView(R.layout.school_setting);
+        
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.school_toolbar);
+        setSupportActionBar(toolbar);
         
         menulayout = (LinearLayout) findViewById(R.id.menulayout);
         menulist = (LinearLayout) findViewById(R.id.menulist);

@@ -3,7 +3,6 @@ package me.blog.colombia2.schoolparser.tab;
 import android.os.*;
 import android.support.v4.app.*;
 import android.support.v4.widget.*;
-import android.support.v7.app.*;
 import android.support.v7.widget.*;
 import android.view.*;
 import android.widget.*;
@@ -12,7 +11,6 @@ import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
@@ -75,6 +73,10 @@ public class ArticlePageFragment extends Fragment {
             try {
                 parser.setCurrentPage(1).connect();
                 articleList = parser.getArticleList();
+                if(articleList.size() == 0) {
+                    
+                    return 0;
+                }
                 adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
                 if(parser.getMaxPage() > 1) {
                     articleList.add(null);

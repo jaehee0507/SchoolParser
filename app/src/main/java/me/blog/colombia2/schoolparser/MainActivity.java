@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 getSupportActionBar().setTitle(tab.getText());
                 viewPager.setCurrentItem(tab.getPosition());
-                tab.select();
             }
             
             @Override

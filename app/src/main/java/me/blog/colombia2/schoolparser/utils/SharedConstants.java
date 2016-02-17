@@ -5,9 +5,9 @@ import me.blog.colombia2.schoolparser.parser.*;
 
 public class SharedConstants {
     public ArrayList<FileData> ATTACHMENTS;
-    public String SCHOOL_URL = "http://cw.hs.kr";
-    public ArrayList<String> MENUS = new ArrayList<>();
-    public ArrayList<String> MENU_NAMES = new ArrayList<>();
+    public String SCHOOL_URL;
+    public ArrayList<String> MENUS;
+    public ArrayList<String> MENU_NAMES;
     
     private static SharedConstants instance = new SharedConstants();
     
@@ -15,5 +15,9 @@ public class SharedConstants {
         return instance;
     }
     
-    private SharedConstants() { }
+    private SharedConstants() {
+        SCHOOL_URL = "http://cw.hs.kr";
+        MENUS = new ArrayList<>();
+        MENU_NAMES = new ArrayList<>();
+    }
 }

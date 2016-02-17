@@ -166,8 +166,9 @@ public class ListParser {
         return (int) Math.ceil((double) getTotalArticles() / 10.0);
     }
     
-    public String getTitle() throws IOException {
-        return MenuTitleParser.getTitle(schoolUrl, menuId);
+    public String getTitle() {
+        String title = doc.select("title").first().text();
+        return title.substring(0, title.indexOf("<")-1);
     }
     
     /**

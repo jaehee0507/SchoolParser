@@ -29,7 +29,7 @@ public class ArticlePageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.main, container, false);
+        View layout = inflater.inflate(R.layout.main, container, false);
         
         refresh = (SwipeRefreshLayout) layout.findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

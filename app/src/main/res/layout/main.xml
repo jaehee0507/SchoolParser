@@ -1,23 +1,36 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/maincontent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-	
-	<android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        
-   	    <android.support.v7.widget.RecyclerView
-	        android:id="@+id/articles"
-            android:paddingTop="5dp"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"/>
-        
-    </android.support.v4.widget.SwipeRefreshLayout>
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/maincontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+	
+    	<android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        
+   	        <android.support.v7.widget.RecyclerView
+	            android:id="@+id/articles"
+                android:paddingTop="5dp"
+                android:clipToPadding="false"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent"/>
+        
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/toolbar_dropshadow"/>
+    
+</RelativeLayout>

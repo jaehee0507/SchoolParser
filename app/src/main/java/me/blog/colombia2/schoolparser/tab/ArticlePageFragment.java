@@ -11,6 +11,7 @@ import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
@@ -19,8 +20,7 @@ public class ArticlePageFragment extends Fragment {
     public SwipeRefreshLayout refresh;
     
     public ArticlePageFragment() {
-        this.parser = new ListParser()
-                    .setSchoolUrl(SharedConstants.getInstance().SCHOOL_URL);
+        this.parser = new ListParser().setSchoolUrl(SharedConstants.SCHOOL_URL);
     }
     
     public void setMenuId(String menuId) {
@@ -85,6 +85,7 @@ public class ArticlePageFragment extends Fragment {
             } catch(IOException e) {
                 return 1;
             } catch(Exception e) {
+                Log.e("affoparser", e+"");
                 return 2;
             }
 

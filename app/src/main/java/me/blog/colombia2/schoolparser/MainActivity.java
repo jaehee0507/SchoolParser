@@ -9,26 +9,21 @@ import android.support.v7.app.*;
 import android.view.*;
 import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
+    public ViewPager viewPager;
     protected MenuPagerAdapter adapter;
     protected TabLayout tabLayout;
-    protected SharedConstants constants;
-    public ViewPager viewPager;
+    protected ArrayList<String> menuArr;
+    protected ArrayList<String> menuNameArr;
     
     public static MainActivity instance;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        constants = SharedConstants.getInstance();
         instance = this;
         super.onCreate(savedInstanceState);
-        if(SharedConstants.getInstance().MENUS.size() == 0) {
-            Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
-            startActivity(i);
-            
-            finish();
-        }
         setContentView(R.layout.mainpage);
         
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
@@ -65,40 +60,37 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.settings, menu);
-        menu.getItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menu.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                getSharedPreferences("schoolData", MODE_PRIVATE).edit().clear().commit();
                 Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
                 startActivity(i);
-                finish();
+                
                 return true;
             }
         });
-        final SubMenu sub = menu.getItem(0).getSubMenu();
-        for(int i = 0; i < constants.MENUS.size(); i++)
-            sub.add(0, i, Menu.NONE, constants.MENU_NAMES.get(i))
-               .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                   @Override
-                   public boolean onMenuItemClick(MenuItem item) {
-                       TabLayout.Tab tab = tabLayout.getTabAt(item.getItemId());
-                       tab.select();
-                       viewPager.setCurrentItem(item.getItemId());
-                       return true;
-                   }
-               });
         
         return true;
     }
     
     protected void startParser() {
+        SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
+        if(!pref.getString("menulist", "null").equals("null")) {
+            menuArr = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));
+            menuNameArr = new ArrayList<String>(Arrays.asList(pref.getString("menunames", "").split(";")));
+        } else {
+            Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
+            startActivity(i);
+            return;
+        }
+        
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
 
-        for(int i = 0; i < constants.MENUS.size(); i++) {
+        for(int i = 0; i < menuArr.size(); i++) {
             ArticlePageFragment frag = new ArticlePageFragment();
-            frag.setMenuId(constants.MENUS.get(i));
-            adapter.addFragment(frag, constants.MENU_NAMES.get(i));
+            frag.setMenuId(menuArr.get(i));
+            adapter.addFragment(frag, menuNameArr.get(i));
         }
 
         viewPager.setAdapter(adapter);

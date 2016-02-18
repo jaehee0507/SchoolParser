@@ -14,6 +14,7 @@ import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import android.text.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -87,7 +88,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.content_attachments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedConstants.getInstance().ATTACHMENTS = article.getAttachments();
+                    SharedConstants.ATTACHMENTS = article.getAttachments();
                     Intent i = new Intent(MainActivity.instance, AttachmentsActivity.class);
                     MainActivity.instance.startActivity(i);
                 }
@@ -159,22 +160,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     
     class ArticleAsyncTask extends AsyncTask<String, String, Integer> {
         private ArticleViewHolder holder;
-        private String text;
+        private Spanned text;
         
         public ArticleAsyncTask(ArticleViewHolder holder) {
             this.holder = holder;
-            this.text = "";
         }
 
         @Override
         protected Integer doInBackground(String... params) {
             try {
                 Document article = Jsoup.connect(params[0]).timeout(60 * 1000).get();
-                Elements texts = (article.getElementById("m_content").select("td p").size() > 0 ? article.getElementById("m_content").select("td p") : article.getElementById("m_content").select("td"));
-                StringBuffer result = new StringBuffer();
-                for(Element e : texts)
-                    result.append(e.text()).append("\n");
-                text = result.toString();
+                text = Html.fromHtml(article.getElementById("m_content").select("td").first().toString());
             } catch(IOException e) {
                 return 1;
             }

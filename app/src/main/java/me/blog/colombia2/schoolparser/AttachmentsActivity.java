@@ -31,7 +31,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         
         views = new HashMap<>();
         
-        ArrayList<FileData> files = SharedConstants.getInstance().ATTACHMENTS;
+        ArrayList<FileData> files = SharedConstants.ATTACHMENTS;
         LinearLayout layout = (LinearLayout) findViewById(R.id.content_layout);
         for(FileData attach : files) {
             RelativeLayout checkbox = getCheckBoxLayout(attach);

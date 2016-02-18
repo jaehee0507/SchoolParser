@@ -25,6 +25,10 @@ public class AttachmentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attachments);
         
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.attach_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        
         views = new HashMap<>();
         
         ArrayList<FileData> files = SharedConstants.getInstance().ATTACHMENTS;

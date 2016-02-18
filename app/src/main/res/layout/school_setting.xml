@@ -55,7 +55,7 @@
     
     <Button
         android:id="@+id/bottom"
-        android:background="#212121"
+        android:background="?attr/colorPrimary"
         android:textColor="#ffffff"
         android:textSize="16dp"
         android:text="@string/finish"

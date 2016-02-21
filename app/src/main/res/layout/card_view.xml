@@ -77,14 +77,14 @@
                     app:mrl_rippleAlpha="0.5">
                     
                     <Button
-                        android:id="@+id/gotourl"
+                        android:id="@+id/readall"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:singleLine="true"
                         android:textColor="#000000"
                         android:textSize="11dp"
                         android:background="#00000000"
-                        android:text="@string/goto_url"/>
+                        android:text="@string/read_all"/>
                 
                 </com.balysv.materialripple.MaterialRippleLayout>
                 
@@ -104,6 +104,25 @@
                         android:textSize="11dp"
                         android:background="#00000000"
                         android:text="@string/attachments"/>
+                
+                </com.balysv.materialripple.MaterialRippleLayout>
+                
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="#d2d2d2"
+                    app:mrl_rippleAlpha="0.5">
+                    
+                    <Button
+                        android:id="@+id/replies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:singleLine="true"
+                        android:textColor="#000000"
+                        android:textSize="11dp"
+                        android:background="#00000000"
+                        android:text="@string/see_replies"/>
                 
                 </com.balysv.materialripple.MaterialRippleLayout>
             

@@ -5,6 +5,7 @@ import android.graphics.*;
 import android.net.*;
 import android.os.*;
 import android.support.v7.widget.*;
+import android.text.*;
 import android.view.*;
 import java.io.*;
 import java.util.*;
@@ -13,8 +14,7 @@ import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
-import org.jsoup.select.*;
-import android.text.*;
+import android.text.method.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -55,7 +55,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.opened = false;
                 
             holder.titleText.setText(article.getTitle());
-            holder.dateText.setText(article.getDate());
+            holder.dateText.setText(article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,10 +77,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.card.setCardBackgroundColor(Color.WHITE);
             }
         
-            holder.content_gotourl.setOnClickListener(new View.OnClickListener() {
+            holder.content_readall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(article.getHyperLink()));
+                    Intent i = new Intent(MainActivity.instance, ArticleActivity.class);
+                    i.putExtra("url", article.getHyperLink());
                     MainActivity.instance.startActivity(i);
                 }
             });
@@ -93,6 +94,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     MainActivity.instance.startActivity(i);
                 }
             });
+            
+            if(article.hasReply()) {
+                holder.content_replies.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(MainActivity.instance, ReplyActivity.class);
+                        i.putExtra("hyperlink", article.getHyperLink());
+                        MainActivity.instance.startActivity(i);
+                    }
+                });
+            } else {
+                holder.content_replies.setOnClickListener(null);
+            }
         } else if(a instanceof LoadMoreHolder) {
             final LoadMoreHolder holder = (LoadMoreHolder) a;
             
@@ -173,6 +187,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 text = Html.fromHtml(article.getElementById("m_content").select("td").first().toString());
             } catch(IOException e) {
                 return 1;
+            } catch(Exception e) {
+                text = new SpannedString("권한이 없습니다.");
+                return 0;
             }
             return 0;
         }

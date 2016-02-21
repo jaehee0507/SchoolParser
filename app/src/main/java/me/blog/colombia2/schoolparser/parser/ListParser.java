@@ -5,6 +5,7 @@ import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import java.util.regex.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
@@ -143,6 +144,7 @@ public class ListParser {
             int visitorCount = Integer.parseInt(article.select("td").get(visitorCount_i).text(), 10);
             String title = !isNotice ? titleData.select("a").first().text() : titleData.select("a span").first().text();
             String hyperLink = titleData.select("a").first().attr("href");
+            boolean hasReply = Pattern.matches(".*\\[[0-9]+\\] *$", title);
             
             ArrayList<FileData> attachments = new ArrayList<>();
             Elements attachElems = article.select(".m_limage a");
@@ -152,7 +154,7 @@ public class ListParser {
                 attachments.add(new FileData(file_title, schoolUrl+file_hyperLink));
             }
             
-            articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, attachments));
+            articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, hasReply, attachments));
         }
         
         return articleList;

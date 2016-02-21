@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="#FAFAFA"
         app:rippleColor="#F5F5F5"
         app:fabSize="mini"

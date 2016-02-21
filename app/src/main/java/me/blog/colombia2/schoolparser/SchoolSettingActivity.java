@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import android.support.v7.widget.*;
 
 public class SchoolSettingActivity extends AppCompatActivity {
     protected Button bottomButton;
@@ -18,7 +19,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
     protected LinearLayout menulayout;
     protected LinearLayout menulist;
     
-    protected HashMap<String, String> menus;
+    protected LinkedHashMap<String, LinkedHashMap<String, String>> menus;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             for(String key : menus.keySet())
-                                menulist.addView(getCheckBox(key));
+                                menulist.addView(getCardView(key, menus.get(key)));
                         }
                     });
                 } catch(IOException e) {
@@ -68,11 +69,14 @@ public class SchoolSettingActivity extends AppCompatActivity {
                     
                 int checkedCount = 0;
                 for(int i = 0; i < menulist.getChildCount(); i++) {
-                    CheckBox child = (CheckBox) menulist.getChildAt(i);
-                    if(child.isChecked()) {
-                        checkedCount++;
-                        menuArr.add(menus.get(child.getText().toString()));
-                        menuNameArr.add(child.getText().toString());
+                    LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
+                    for(int j = 0; j < menulayout.getChildCount(); j++) {
+                        CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                        if(check.isChecked()) {
+                            checkedCount++;
+                            menuArr.add((String) check.getTag());
+                            menuNameArr.add(check.getText().toString());
+                        }
                     }
                 }
                 
@@ -88,7 +92,9 @@ public class SchoolSettingActivity extends AppCompatActivity {
                     edit.putString("menunames", menunames.toString());
                     edit.commit();
                     
-                    MainActivity.instance.startParser();
+                    MainActivity.instance.finish();
+                    Intent i = new Intent(SchoolSettingActivity.this, MainActivity.class);
+                    startActivity(i);
                     finish();
                 } else
                     Snackbar.make(getWindow().getDecorView(), "게시판 한 개 이상을 선택해주세요.", Snackbar.LENGTH_SHORT).show();
@@ -106,13 +112,19 @@ public class SchoolSettingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menuselect_all) {
             for(int i = 0; i < menulist.getChildCount(); i++) {
-                CheckBox child = (CheckBox) menulist.getChildAt(i);
-                child.setChecked(true);
+                LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
+                for(int j = 0; j < menulayout.getChildCount(); j++) {
+                    CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                    check.setChecked(true);
+                }
             }
         } else if(item.getItemId() == R.id.menudeselect_all) {
             for(int i = 0; i < menulist.getChildCount(); i++) {
-                CheckBox child = (CheckBox) menulist.getChildAt(i);
-                child.setChecked(false);
+                LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
+                for(int j = 0; j < menulayout.getChildCount(); j++) {
+                    CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                    check.setChecked(false);
+                }
             }
         } else if(item.getItemId() == android.R.id.home) {
             finish();
@@ -120,9 +132,17 @@ public class SchoolSettingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    protected CheckBox getCheckBox(String key) {
-        CheckBox checkbox = new CheckBox(this);
-        checkbox.setText(key);
-        return checkbox;
+    protected CardView getCardView(String name, HashMap<String, String> menus) {
+        CardView card = (CardView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.menu_card_view, null);
+        ((TextView) card.findViewById(R.id.title)).setText(name);
+        LinearLayout layout = (LinearLayout) card.findViewById(R.id.menulayout);
+        for(String key : menus.keySet()) {
+            CheckBox check = new CheckBox(this);
+            check.setText(key);
+            check.setTag(menus.get(key));
+            layout.addView(check);
+        }
+        
+        return card;
     }
 }

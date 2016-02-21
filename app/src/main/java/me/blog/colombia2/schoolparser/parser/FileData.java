@@ -1,4 +1,5 @@
 package me.blog.colombia2.schoolparser.parser;
+import java.util.*;
 
 public class FileData {
     final protected String title;
@@ -15,5 +16,10 @@ public class FileData {
 
     public String getHyperLink() {
         return this.hyperLink;
+    }
+    
+    @Override
+    public String toString() {
+        return this.title+","+this.hyperLink;
     }
 }

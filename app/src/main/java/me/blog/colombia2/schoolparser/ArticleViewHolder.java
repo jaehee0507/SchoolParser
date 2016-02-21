@@ -3,6 +3,7 @@ package me.blog.colombia2.schoolparser;
 import android.support.v7.widget.*;
 import android.util.*;
 import android.view.*;
+import android.webkit.*;
 import android.widget.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
@@ -12,8 +13,9 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected LinearLayout content;
     protected ProgressBar loading;
     protected TextView content_text;
-    protected Button content_gotourl;
+    protected Button content_readall;
     protected Button content_attachments;
+    protected Button content_replies;
     protected CardView card;
     protected boolean opened;
     
@@ -26,8 +28,9 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         opened    = false;
         
         content_text        = (TextView) content.findViewById(R.id.content_text);
-        content_gotourl     = (Button) content.findViewById(R.id.gotourl);
+        content_readall     = (Button) content.findViewById(R.id.readall);
         content_attachments = (Button) content.findViewById(R.id.attachments);
+        content_replies     = (Button) content.findViewById(R.id.replies);
         
         loading = (ProgressBar) itemView.findViewById(R.id.loading);
     }

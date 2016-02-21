@@ -15,28 +15,40 @@ import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
+    protected String menuId;
     
     public ListParser parser;
     public SwipeRefreshLayout refresh;
     
     public ArticlePageFragment() {
         this.parser = new ListParser().setSchoolUrl(SharedConstants.SCHOOL_URL);
+        this.menuId = "";
     }
     
     public void setMenuId(String menuId) {
-        this.parser.setMenuId(menuId);
+        this.menuId = menuId;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putString("menuId", menuId);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.main, container, false);
         
+        if(savedInstanceState != null)
+            menuId = savedInstanceState.getString("menuId");
+        
         refresh = (SwipeRefreshLayout) layout.findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 ParserAsyncTask task = new ParserAsyncTask();
-                task.execute();
+                task.execute(menuId);
             }
         });
         
@@ -47,7 +59,7 @@ public class ArticlePageFragment extends Fragment {
         articles.setHasFixedSize(true);
         
         ParserAsyncTask task = new ParserAsyncTask();
-        task.execute();
+        task.execute(menuId);
         
         return layout;
     }
@@ -71,10 +83,9 @@ public class ArticlePageFragment extends Fragment {
         @Override
         protected Integer doInBackground(String... params) {
             try {
-                parser.setCurrentPage(1).connect();
+                parser.setMenuId(params[0]).setCurrentPage(1).connect();
                 articleList = parser.getArticleList();
                 if(articleList.size() == 0) {
-                    
                     return 0;
                 }
                 adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
@@ -85,7 +96,6 @@ public class ArticlePageFragment extends Fragment {
             } catch(IOException e) {
                 return 1;
             } catch(Exception e) {
-                Log.e("affoparser", e+"");
                 return 2;
             }
 

@@ -37,19 +37,19 @@ public class MainActivity extends AppCompatActivity {
             builder.setMessage("3G/LTE와 같은 모바일 네트워크 환경에서 이용 시 과다 데이터 부과요금이 발생할 수 있습니다.");
             builder.setPositiveButton("확인", null);
             builder.setNegativeButton("다시 보지 않기", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int i) {
-                        SharedPreferences.Editor edit = getSharedPreferences("appData", MODE_PRIVATE).edit();
-                        edit.putBoolean("cautionIgnore", true);
-                        edit.commit();
-                    }
-                });
+                @Override
+                public void onClick(DialogInterface d, int i) {
+                    SharedPreferences.Editor edit = getSharedPreferences("appData", MODE_PRIVATE).edit();
+                    edit.putBoolean("cautionIgnore", true);
+                    edit.commit();
+                }
+            });
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        startParser();
-                    }
-                });
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    startParser();
+                }
+            });
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {

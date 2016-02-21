@@ -2,7 +2,6 @@ package me.blog.colombia2.schoolparser;
 
 import android.content.*;
 import android.graphics.*;
-import android.net.*;
 import android.os.*;
 import android.support.v7.widget.*;
 import android.text.*;
@@ -14,7 +13,6 @@ import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
-import android.text.method.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;

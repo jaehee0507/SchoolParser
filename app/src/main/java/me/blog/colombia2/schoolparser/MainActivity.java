@@ -7,9 +7,11 @@ import android.support.design.widget.*;
 import android.support.v4.view.*;
 import android.support.v7.app.*;
 import android.view.*;
-import me.blog.colombia2.schoolparser.tab.*;
-import me.blog.colombia2.schoolparser.utils.*;
+import java.io.*;
 import java.util.*;
+import me.blog.colombia2.schoolparser.parser.*;
+import me.blog.colombia2.schoolparser.tab.*;
+import android.util.*;
 
 public class MainActivity extends AppCompatActivity {
     public ViewPager viewPager;
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
 
+        adapter.addFragment(new SchoolFoodFragment(), "급식 정보");
         for(int i = 0; i < menuArr.size(); i++) {
             ArticlePageFragment frag = new ArticlePageFragment();
             frag.setMenuId(menuArr.get(i));

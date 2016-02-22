@@ -4,13 +4,13 @@ import android.content.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v7.app.*;
+import android.support.v7.widget.*;
 import android.view.*;
 import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.support.v7.widget.*;
 
 public class SchoolSettingActivity extends AppCompatActivity {
     protected Button bottomButton;
@@ -71,7 +71,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
                 for(int i = 0; i < menulist.getChildCount(); i++) {
                     LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                     for(int j = 0; j < menulayout.getChildCount(); j++) {
-                        CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                        AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
                         if(check.isChecked()) {
                             checkedCount++;
                             menuArr.add((String) check.getTag());
@@ -114,7 +114,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
             for(int i = 0; i < menulist.getChildCount(); i++) {
                 LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                 for(int j = 0; j < menulayout.getChildCount(); j++) {
-                    CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                    AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
                     check.setChecked(true);
                 }
             }
@@ -122,7 +122,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
             for(int i = 0; i < menulist.getChildCount(); i++) {
                 LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                 for(int j = 0; j < menulayout.getChildCount(); j++) {
-                    CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                    AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
                     check.setChecked(false);
                 }
             }
@@ -137,7 +137,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
         ((TextView) card.findViewById(R.id.title)).setText(name);
         LinearLayout layout = (LinearLayout) card.findViewById(R.id.menulayout);
         for(String key : menus.keySet()) {
-            CheckBox check = new CheckBox(this);
+            AppCompatCheckBox check = new AppCompatCheckBox(this);
             check.setText(key);
             check.setTag(menus.get(key));
             layout.addView(check);

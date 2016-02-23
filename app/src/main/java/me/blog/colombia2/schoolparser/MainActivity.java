@@ -7,11 +7,9 @@ import android.support.design.widget.*;
 import android.support.v4.view.*;
 import android.support.v7.app.*;
 import android.view.*;
-import java.io.*;
+import android.widget.*;
 import java.util.*;
-import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.tab.*;
-import android.util.*;
 
 public class MainActivity extends AppCompatActivity {
     public ViewPager viewPager;
@@ -19,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected TabLayout tabLayout;
     protected ArrayList<String> menuArr;
     protected ArrayList<String> menuNameArr;
+    protected Spinner menuSpinner;
     
     public static MainActivity instance;
     
@@ -30,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
         
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        
+        menuSpinner = (Spinner) findViewById(R.id.category_spinner);
         
         SharedPreferences appData = getSharedPreferences("appData", MODE_PRIVATE);
         boolean cautionIgnore = appData.getBoolean("cautionIgnore", false);
@@ -86,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         
+        ArrayList<String> nameArr = new ArrayList<>();
+        nameArr.add("급식 정보");
+        nameArr.addAll(menuNameArr);
+        SpinnerAdapter category = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, nameArr);
+        menuSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView v, View a, int p, long l) {
+                tabLayout.getTabAt(p).select();
+                viewPager.setCurrentItem(p);
+            }
+            
+            @Override
+            public void onNothingSelected(AdapterView v) {
+                
+            }
+        });
+        menuSpinner.setAdapter(category);
+        
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
 
@@ -102,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                getSupportActionBar().setTitle(tab.getText());
+                menuSpinner.setSelection(tab.getPosition());
+               // getSupportActionBar().setTitle(tab.getText());
                 viewPager.setCurrentItem(tab.getPosition());
             }
 

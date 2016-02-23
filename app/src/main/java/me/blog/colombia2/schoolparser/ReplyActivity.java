@@ -3,11 +3,10 @@ package me.blog.colombia2.schoolparser;
 import android.os.*;
 import android.support.v7.app.*;
 import android.view.*;
+import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
-import android.widget.*;
-import android.support.v7.widget.*;
 
 public class ReplyActivity extends AppCompatActivity {
     protected String url;
@@ -65,7 +64,7 @@ public class ReplyActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             if(result == 0) {
                 for(ReplyData reply : replies) {
-                    CardView card = (CardView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.reply_form, null);
+                    View card = LayoutInflater.from(getApplicationContext()).inflate(R.layout.reply_form, null);
                     TextView nickname = (TextView) card.findViewById(R.id.nickname);
                     TextView content = (TextView) card.findViewById(R.id.content);
                     nickname.setText(reply.getNickname());

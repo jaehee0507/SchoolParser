@@ -5,13 +5,11 @@ import android.support.v4.app.*;
 import android.support.v4.widget.*;
 import android.support.v7.widget.*;
 import android.view.*;
-import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;

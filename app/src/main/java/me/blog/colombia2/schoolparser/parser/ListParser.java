@@ -2,10 +2,10 @@ package me.blog.colombia2.schoolparser.parser;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import java.util.regex.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;

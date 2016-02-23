@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
-        android:id="@+id/settings"
-        android:icon="@drawable/ic_settings_white_24dp"
-        android:title="@string/settings"
+        android:id="@+id/categories"
+        android:icon="@drawable/ic_reorder_white_24dp"
+        android:title="@string/categories"
         app:showAsAction="always"
         android:orderInCategory="0"/>
     

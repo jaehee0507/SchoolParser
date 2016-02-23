@@ -1,13 +1,11 @@
 package me.blog.colombia2.schoolparser.parser;
 
-import android.util.*;
+import android.text.*;
 import java.io.*;
-import java.text.*;
 import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import android.text.*;
 
 public class SchoolFoodParser {
     public static String getTable(int type) throws IOException {
@@ -26,7 +24,7 @@ public class SchoolFoodParser {
                             .get();
         Elements foodList = doc.select("tbody tr").get(1).select("td");
         result = (Html.fromHtml(foodList.get(currentDay).toString())+"").replaceAll("[①-⑬]", "");
-        if(result.equals(" "))
+        if(result.equals(""))
             result = "급식이 없습니다.";
         
         return result; 

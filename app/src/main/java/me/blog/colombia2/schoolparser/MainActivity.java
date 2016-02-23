@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         menuSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView v, View a, int p, long l) {
-                tabLayout.getTabAt(p).select();
                 viewPager.setCurrentItem(p);
             }
             
@@ -122,9 +121,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                menuSpinner.setSelection(tab.getPosition());
-               // getSupportActionBar().setTitle(tab.getText());
                 viewPager.setCurrentItem(tab.getPosition());
+                menuSpinner.setSelection(tab.getPosition());
             }
 
            @Override

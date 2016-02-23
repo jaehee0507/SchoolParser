@@ -5,6 +5,7 @@ import android.content.*;
 import java.util.*;
 import android.view.*;
 import android.graphics.*;
+import android.util.*;
 
 public class SpinnerAdapter extends ArrayAdapter<String> {
     Context context;
@@ -41,6 +42,9 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
         tv.setText(items.get(position));
         tv.setTextColor(Color.WHITE);
         tv.setTextSize(20);
+        int dip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics());
+        tv.setPadding(0, 0, dip, 0);
+        tv.setGravity(Gravity.LEFT|Gravity.CENTER);
         return convertView;
     }
 }

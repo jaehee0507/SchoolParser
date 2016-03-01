@@ -105,8 +105,13 @@ public class ArticlePageFragment extends Fragment {
             if(result == 0) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(adapter);
+                if(articleList.size() == 0) {
+                    
+                }
             } else if(result == 1) {
-                
+                refresh.setRefreshing(false);
+                articles.setAdapter(null);
+                ErrorDisplayer.showInternetError(MainActivity.instance.getWindow().getDecorView());
             } else if(result == 2) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(null);

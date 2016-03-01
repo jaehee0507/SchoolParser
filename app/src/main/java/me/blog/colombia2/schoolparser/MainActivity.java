@@ -10,6 +10,7 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.tab.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class MainActivity extends AppCompatActivity {
     public ViewPager viewPager;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<String> menuArr;
     protected ArrayList<String> menuNameArr;
     protected Spinner menuSpinner;
+    protected FloatingActionButton share;
     
     public static MainActivity instance;
     
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         
+        share = (FloatingActionButton) findViewById(R.id.fab);
         menuSpinner = (Spinner) findViewById(R.id.category_spinner);
         
         SharedPreferences appData = getSharedPreferences("appData", MODE_PRIVATE);
@@ -59,6 +62,21 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startParser();
         }
+        
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!((SchoolFoodFragment) adapter.getItem(0)).isLoading()) {
+                    Intent i = new Intent();
+                    i.setAction(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_TEXT, ((SchoolFoodFragment) adapter.getItem(0)).getMenus());
+                    startActivity(Intent.createChooser(i, "공유하기"));
+                } else {
+                    Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     
     @Override
@@ -96,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView v, View a, int p, long l) {
                 viewPager.setCurrentItem(p);
+                if(p == 0)
+                    share.show();
+                else
+                    share.hide();
             }
             
             @Override
@@ -123,6 +145,10 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
                 menuSpinner.setSelection(tab.getPosition());
+                if(tab.getPosition() == 0)
+                    share.show();
+                else
+                    share.hide();
             }
 
            @Override
@@ -136,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public boolean isMobileNetwork() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnected();
         if(isConnected) {

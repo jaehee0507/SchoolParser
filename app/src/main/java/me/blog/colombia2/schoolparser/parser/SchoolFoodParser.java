@@ -6,6 +6,7 @@ import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import android.util.*;
 
 public class SchoolFoodParser {
     public static String getTable(int type) throws IOException {
@@ -23,7 +24,7 @@ public class SchoolFoodParser {
                             .data("schMmealScCode", type+"")
                             .get();
         Elements foodList = doc.select("tbody tr").get(1).select("td");
-        result = (Html.fromHtml(foodList.get(currentDay).toString())+"").replaceAll("[①-⑬]", "");
+        result = (Html.fromHtml(foodList.get(currentDay).toString())+"").replaceAll("[①-⑬0-9]", "");
         if(result.equals(""))
             result = "급식이 없습니다.";
         

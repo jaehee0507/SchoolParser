@@ -7,6 +7,7 @@ import android.webkit.*;
 import org.jsoup.nodes.*;
 import org.jsoup.*;
 import java.io.*;
+import android.util.*;
 
 public class ArticleActivity extends AppCompatActivity {
     WebView webview;
@@ -57,7 +58,8 @@ public class ArticleActivity extends AppCompatActivity {
                 Document doc = Jsoup.connect(url)
                     .timeout(10 * 1000)
                     .get();
-                html = doc.getElementById("m_content").select("td").first().toString();
+                String date = doc.getElementById("m_mainView").select("tr").get(1).select("td").get(3).text();
+                html = doc.getElementById("m_content").select("td").first().toString().replace("/files", "http://cw.hs.kr/files").replace("alt=", "width=100% alt=")+"<br><br>등록일 : "+date;
             } catch(IOException e) {
                 
             }
@@ -67,7 +69,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
-            webview.loadData(html, "text/html; charset=UTF-8", null);
+            webview.loadDataWithBaseURL(null, html, "text/html", "UTF-8", "about:blank");
             super.onPostExecute(result);
         }
     }

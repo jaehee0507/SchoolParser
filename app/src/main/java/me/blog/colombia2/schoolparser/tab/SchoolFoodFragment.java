@@ -7,6 +7,8 @@ import android.widget.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import java.io.*;
+import android.content.*;
+import java.util.*;
 
 public class SchoolFoodFragment extends Fragment {
     protected TextView breakfast;
@@ -29,6 +31,22 @@ public class SchoolFoodFragment extends Fragment {
         return layout;
     }
     
+    public String getMenus() {
+        Calendar c = Calendar.getInstance();
+        String date = c.get(Calendar.YEAR)+"년 "+(c.get(Calendar.MONTH)+1)+"월 "+c.get(Calendar.DATE)+"일의 급식";
+        return date+"\n \n"+
+               "<조식>\n"+
+               breakfast.getText().toString()+"\n"+
+               "<중식>\n"+
+               lunch.getText().toString()+"\n"+
+               "<석식>\n"+
+               dinner.getText().toString();
+    }
+    
+    public boolean isLoading() {
+        return dinner.getText().toString().equals(getResources().getString(R.string.loading));
+    }
+    
     class SchoolFoodAsyncTask extends AsyncTask<String, String, Integer> {
         @Override
         protected void onPreExecute() {
@@ -44,6 +62,11 @@ public class SchoolFoodFragment extends Fragment {
             try {
                 String breakfast_ = SchoolFoodParser.getTable(1);
                 publishProgress("1", breakfast_);
+                if(breakfast_.equals("급식이 없습니다.")) {
+                    publishProgress("2", breakfast_);
+                    publishProgress("2", breakfast_);
+                    return null;
+                }
                 String lunch_ = SchoolFoodParser.getTable(2);
                 publishProgress("2", lunch_);
                 String dinner_ = SchoolFoodParser.getTable(3);

@@ -182,7 +182,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         protected Integer doInBackground(String... params) {
             try {
                 Document article = Jsoup.connect(params[0]).timeout(60 * 1000).get();
-                text = Html.fromHtml(article.getElementById("m_content").select("td").first().toString());
+                text = Html.fromHtml(article.getElementById("m_content").select("td").first().toString().replace("/files", "http://cw.hs.kr/files").replace("alt=", "width=100% alt="));
             } catch(IOException e) {
                 return 1;
             } catch(Exception e) {

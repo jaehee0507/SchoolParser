@@ -2,18 +2,21 @@ package me.blog.colombia2.schoolparser.tab;
 
 import android.os.*;
 import android.support.v4.app.*;
+import android.util.*;
 import android.view.*;
 import android.widget.*;
+import com.wdullaer.materialdatetimepicker.date.*;
+import java.io.*;
+import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
-import java.io.*;
-import android.content.*;
-import java.util.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class SchoolFoodFragment extends Fragment {
     protected TextView breakfast;
     protected TextView lunch;
     protected TextView dinner;
+	protected TextView dateselect;
     
     public SchoolFoodFragment() {
         
@@ -25,6 +28,33 @@ public class SchoolFoodFragment extends Fragment {
         breakfast = (TextView) layout.findViewById(R.id.breakfast);
         lunch = (TextView) layout.findViewById(R.id.lunch);
         dinner = (TextView) layout.findViewById(R.id.dinner);
+		dateselect = (TextView) layout.findViewById(R.id.dateselect);
+		
+		dateselect.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//Log.i("affoparser", DateInstance.YEAR+" "+DateInstance.MONTH+" "+DateInstance.DATE);
+				DatePickerDialog dpd = DatePickerDialog.newInstance(
+					new DatePickerDialog.OnDateSetListener() {
+						@Override
+						public void onDateSet(DatePickerDialog dialog, int y, int m, int d) {
+							DateInstance.YEAR = y;
+							DateInstance.MONTH = m+1;
+							DateInstance.DATE = d;
+							Calendar c = Calendar.getInstance();
+							c.set(y, m, d);
+							DateInstance.DAY = c.get(Calendar.DAY_OF_WEEK)-1;
+							
+							new SchoolFoodAsyncTask().execute();
+						}
+					},
+					DateInstance.YEAR,
+					DateInstance.MONTH-1,
+					DateInstance.DATE
+				);
+				dpd.show(MainActivity.instance.getFragmentManager(), "Datepickerdialog");
+			}
+		});
         
         new SchoolFoodAsyncTask().execute();
         
@@ -32,8 +62,7 @@ public class SchoolFoodFragment extends Fragment {
     }
     
     public String getMenus() {
-        Calendar c = Calendar.getInstance();
-        String date = c.get(Calendar.YEAR)+"년 "+(c.get(Calendar.MONTH)+1)+"월 "+c.get(Calendar.DATE)+"일의 급식";
+        String date = DateInstance.YEAR+"년 "+DateInstance.MONTH+"월 "+DateInstance.DATE+"일의 급식";
         return date+"\n \n"+
                "<조식>\n"+
                breakfast.getText().toString()+"\n"+
@@ -44,7 +73,12 @@ public class SchoolFoodFragment extends Fragment {
     }
     
     public boolean isLoading() {
-        return dinner.getText().toString().equals(getResources().getString(R.string.loading));
+        try {
+            return dinner.getText().toString().equals(getResources().getString(R.string.loading));
+        } catch(Exception e) {
+            Log.e("affoparser", e+"");
+            return true;
+        }
     }
     
     class SchoolFoodAsyncTask extends AsyncTask<String, String, Integer> {
@@ -52,6 +86,7 @@ public class SchoolFoodFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             
+			dateselect.setText(DateInstance.YEAR+"년 "+DateInstance.MONTH+"월 "+DateInstance.DATE+"일");
             breakfast.setText(getResources().getString(R.string.loading));
             lunch.setText(getResources().getString(R.string.loading));
             dinner.setText(getResources().getString(R.string.loading));
@@ -62,9 +97,9 @@ public class SchoolFoodFragment extends Fragment {
             try {
                 String breakfast_ = SchoolFoodParser.getTable(1);
                 publishProgress("1", breakfast_);
-                if(breakfast_.equals("급식이 없습니다.")) {
+                if(breakfast_.equals("급식 정보가 없습니다.")) {
                     publishProgress("2", breakfast_);
-                    publishProgress("2", breakfast_);
+                    publishProgress("3", breakfast_);
                     return null;
                 }
                 String lunch_ = SchoolFoodParser.getTable(2);

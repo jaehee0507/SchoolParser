@@ -120,13 +120,13 @@ public class ListParser {
             Elements indexs = doc.select("thead tr th");
             int titleData_i = 0, writer_i = 0, date_i = 0, visitorCount_i = 0;
             for(int j = 0; j < indexs.size(); j++) {
-                if(indexs.get(j).text().equals("제 목"))
+                if(indexs.get(j).text().replace(" ", "").equals("제목"))
                     titleData_i = j;
-                else if(indexs.get(j).text().equals("이 름"))
+                else if(indexs.get(j).text().replace(" ", "").equals("이름"))
                     writer_i = j;
-                else if(indexs.get(j).text().equals("날짜"))
+                else if(indexs.get(j).text().replace(" ", "").equals("날짜"))
                     date_i = j;
-                else if(indexs.get(j).text().equals("조회"))
+                else if(indexs.get(j).text().replace(" ", "").equals("조회"))
                     visitorCount_i = j;
                 else
                     continue;
@@ -155,6 +155,17 @@ public class ListParser {
             }
             
             articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, hasReply, attachments));
+        }
+        
+        return articleList;
+    }
+    
+    protected ArrayList<PhotoData> getPhotoList() {
+        ArrayList<PhotoData> articleList = new ArrayList<>();
+        
+        Elements articles = doc.select("table tr td");
+        for(Element article : articles) {
+            
         }
         
         return articleList;

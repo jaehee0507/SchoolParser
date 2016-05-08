@@ -6,15 +6,14 @@ import java.util.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import android.util.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class SchoolFoodParser {
     public static String getTable(int type) throws IOException {
         String result = "";
         
-        Calendar c = Calendar.getInstance();
-        String schYmd = c.get(Calendar.YEAR)+"."+getMonthFormat(c.get(Calendar.MONTH))+"."+c.get(Calendar.DATE);
-        int currentDay = c.get(Calendar.DAY_OF_WEEK)-1;
+        String schYmd = DateInstance.YEAR+"."+getMonthFormat(DateInstance.MONTH)+"."+DateInstance.DATE;
+        int currentDay = DateInstance.DAY;
         Document doc = Jsoup.connect("http://hes.cbe.go.kr/sts_sci_md01_001.do")
                             .timeout(10*1000)
                             .data("schulCode", "M100001915")
@@ -26,13 +25,13 @@ public class SchoolFoodParser {
         Elements foodList = doc.select("tbody tr").get(1).select("td");
         result = (Html.fromHtml(foodList.get(currentDay).toString())+"").replaceAll("[①-⑬0-9]", "");
         if(result.equals(""))
-            result = "급식이 없습니다.";
+            result = "급식 정보가 없습니다.";
         
         return result; 
     }
     
     private static String getMonthFormat(int month) {
-        String m = String.valueOf(month+1);
+        String m = String.valueOf(month);
         if(m.length() == 1)
             m = "0"+m;
         return m;

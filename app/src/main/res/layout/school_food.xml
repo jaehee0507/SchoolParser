@@ -15,7 +15,16 @@
             android:id="@+id/main"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+			android:gravity="center|top"
             android:orientation="vertical">
+			
+			<TextView
+				android:id="@+id/dateselect"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="3dp"
+				android:textSize="20dp"
+				android:textColor="@color/date_select"/>
         
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"

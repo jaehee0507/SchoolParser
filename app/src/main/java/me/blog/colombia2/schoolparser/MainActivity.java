@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
+		
+		DateInstance.YEAR = Calendar.getInstance().get(Calendar.YEAR);
+		DateInstance.MONTH = Calendar.getInstance().get(Calendar.MONTH)+1;
+		DateInstance.DATE = Calendar.getInstance().get(Calendar.DATE);
+		DateInstance.DAY = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1;
         
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

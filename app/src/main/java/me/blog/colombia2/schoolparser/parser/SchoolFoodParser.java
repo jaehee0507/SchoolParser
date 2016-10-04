@@ -14,7 +14,7 @@ public class SchoolFoodParser {
         
         String schYmd = DateInstance.YEAR+"."+getMonthFormat(DateInstance.MONTH)+"."+DateInstance.DATE;
         int currentDay = DateInstance.DAY;
-        Document doc = Jsoup.connect("http://hes.cbe.go.kr/sts_sci_md01_001.do")
+        Document doc = Jsoup.connect("http://stu.cbe.go.kr/edusys.jsp?page=sts_m42310")
                             .timeout(10*1000)
                             .data("schulCode", "M100001915")
                             .data("schulCrseScCode", "4")

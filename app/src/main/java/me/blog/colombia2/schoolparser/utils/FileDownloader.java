@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 public class FileDownloader {
-    public interface FileDowloadListener {
+    public interface FileDownloadListener {
         public void onDownloadStart(int fileSize);
         public void onDownloading(int currentBytes);
         public void onDownloadError(Exception err);
@@ -13,7 +13,7 @@ public class FileDownloader {
     
     protected URL url;
     protected File target;
-    protected FileDowloadListener listener;
+    protected FileDownloadListener listener;
     
     public FileDownloader(String url, String target) throws MalformedURLException {
         this.url    = new URL(url);
@@ -35,7 +35,7 @@ public class FileDownloader {
         this.target = target;
     }
     
-    public void setFileDownloadListener(FileDowloadListener listener) {
+    public void setFileDownloadListener(FileDownloadListener listener) {
         this.listener = listener;
     }
     

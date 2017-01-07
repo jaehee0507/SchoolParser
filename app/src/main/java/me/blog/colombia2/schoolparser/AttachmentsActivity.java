@@ -60,7 +60,7 @@ public class AttachmentsActivity extends AppCompatActivity {
                     final String value = views.get(layout);
                     try {
                         FileDownloader downloader = new FileDownloader(value, "/sdcard/Download/"+checkbox.getText());
-                        downloader.setFileDownloadListener(new FileDownloader.FileDowloadListener() {
+                        downloader.setFileDownloadListener(new FileDownloader.FileDownloadListener() {
                             private int fileSize;
                             
                             @Override

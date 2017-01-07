@@ -97,7 +97,7 @@ public class SchoolFoodFragment extends Fragment {
             try {
                 String breakfast_ = SchoolFoodParser.getTable(1);
                 publishProgress("1", breakfast_);
-                if(breakfast_.equals("급식 정보가 없습니다.")) {
+                if(breakfast_.equals("급식 정보가 없습니다")) {
                     publishProgress("2", breakfast_);
                     publishProgress("3", breakfast_);
                     return null;

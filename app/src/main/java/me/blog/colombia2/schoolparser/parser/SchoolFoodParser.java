@@ -1,39 +1,32 @@
 package me.blog.colombia2.schoolparser.parser;
 
-import android.text.*;
 import java.io.*;
 import java.util.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
-import org.jsoup.select.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import org.hyunjun.school.*;
 
 public class SchoolFoodParser {
     public static String getTable(int type) throws IOException {
         String result = "";
         
-        String schYmd = DateInstance.YEAR+"."+getMonthFormat(DateInstance.MONTH)+"."+DateInstance.DATE;
-        int currentDay = DateInstance.DAY;
-        Document doc = Jsoup.connect("http://hes.cbe.go.kr/sts_sci_md01_001.do")
-                            .timeout(10*1000)
-                            .data("schulCode", "M100001915")
-                            .data("schulCrseScCode", "4")
-                            .data("schulKndScCode", "04")
-                            .data("schYmd", schYmd)
-                            .data("schMmealScCode", type+"")
-                            .get();
-        Elements foodList = doc.select("tbody tr").get(1).select("td");
-        result = (Html.fromHtml(foodList.get(currentDay).toString())+"").replaceAll("[①-⑬0-9]", "");
-        if(result.equals(""))
-            result = "급식 정보가 없습니다.";
-        
-        return result; 
-    }
-    
-    private static String getMonthFormat(int month) {
-        String m = String.valueOf(month);
-        if(m.length() == 1)
-            m = "0"+m;
-        return m;
+        School api = new School(School.Type.HIGH, School.Region.CHUNGBUK, "M100001915");
+		try {
+			ArrayList<SchoolMenu> list = new ArrayList<>(api.getMonthlyMenu(DateInstance.YEAR, DateInstance.MONTH));
+			switch(type) {
+				case 1:
+					result = list.get(DateInstance.DATE).breakfast;
+					break;
+				case 2:
+					result = list.get(DateInstance.DATE).lunch;
+					break;
+				case 3:
+					result = list.get(DateInstance.DATE).dinner;
+					break;
+			}
+		} catch(SchoolException e) {
+			result = "급식 정보가 없습니다";
+		}
+		
+        return result.replaceAll("[0-9\\.]", "").replace("급식이 없습니다", "급식 정보가 없습니다");
     }
 }

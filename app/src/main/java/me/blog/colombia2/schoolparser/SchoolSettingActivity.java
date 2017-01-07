@@ -136,10 +136,14 @@ public class SchoolSettingActivity extends AppCompatActivity {
         CardView card = (CardView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.menu_card_view, null);
         ((TextView) card.findViewById(R.id.title)).setText(name);
         LinearLayout layout = (LinearLayout) card.findViewById(R.id.menulayout);
+		SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
+		ArrayList<String> menunames = new ArrayList<>(Arrays.asList(pref.getString("menunames", "").split(";")));
         for(String key : menus.keySet()) {
             AppCompatCheckBox check = new AppCompatCheckBox(this);
             check.setText(key);
             check.setTag(menus.get(key));
+			if(menunames.contains(key))
+				check.setChecked(true);
             layout.addView(check);
         }
         

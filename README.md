@@ -5,6 +5,7 @@
 - [Jsoup](http://jsoup.org/)
 - [MaterialRippleLayout](https://github.com/balysv/material-ripple)
 - [MaterialDateTimePicker](https://github.com/wdullaer/MaterialDateTimePicker)
+- [School API](https://github.com/agemor/school-api)
 
 
 ## License

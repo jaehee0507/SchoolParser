@@ -14,13 +14,13 @@ public class SchoolFoodParser {
 			ArrayList<SchoolMenu> list = new ArrayList<>(api.getMonthlyMenu(DateInstance.YEAR, DateInstance.MONTH));
 			switch(type) {
 				case 1:
-					result = list.get(DateInstance.DATE).breakfast;
+					result = list.get(DateInstance.DATE-1).breakfast;
 					break;
 				case 2:
-					result = list.get(DateInstance.DATE).lunch;
+					result = list.get(DateInstance.DATE-1).lunch;
 					break;
 				case 3:
-					result = list.get(DateInstance.DATE).dinner;
+					result = list.get(DateInstance.DATE-1).dinner;
 					break;
 			}
 		} catch(SchoolException e) {

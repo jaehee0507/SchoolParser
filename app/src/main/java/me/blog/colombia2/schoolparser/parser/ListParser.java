@@ -1,11 +1,14 @@
 package me.blog.colombia2.schoolparser.parser;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import android.util.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
@@ -102,6 +105,17 @@ public class ListParser {
     
     public String getSchoolUrl() {
         return this.schoolUrl;
+    }
+    
+    public boolean isArticleInItForm() {
+        return doc.select("thead tr th").size() == 0;
+    }
+    
+    public String getNonArticleContent() {
+        Element link = doc.getElementById("linkFrame");
+        String url = schoolUrl+"/"+link.attr("src");
+        
+        return url;
     }
 
     public ArrayList<ArticleData> getArticleList() {

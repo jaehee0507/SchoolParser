@@ -28,12 +28,12 @@
 
 	</LinearLayout>
 
-	<WebView
+	<com.github.takahirom.webview_in_coodinator_layout.NestedWebView
 		android:id="@+id/webview"
 		android:visibility="gone"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:paddingBottom="5dp"/>
+		app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 	<View
 		android:id="@+id/toolbar_shadow"

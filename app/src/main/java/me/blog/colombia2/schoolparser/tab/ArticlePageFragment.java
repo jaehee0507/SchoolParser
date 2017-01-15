@@ -13,6 +13,7 @@ import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import com.github.takahirom.webview_in_coodinator_layout.NestedWebView;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
@@ -21,7 +22,7 @@ public class ArticlePageFragment extends Fragment {
 
     public ListParser parser;
     public SwipeRefreshLayout refresh;
-    public WebView webview;
+    public NestedWebView webview;
 
     public ArticlePageFragment() {
         this.parser = new ListParser().setSchoolUrl(SharedConstants.SCHOOL_URL);
@@ -46,11 +47,12 @@ public class ArticlePageFragment extends Fragment {
         if(savedInstanceState != null)
             menuId = savedInstanceState.getString("menuId");
 
-        webview = (WebView) layout.findViewById(R.id.webview);
+        webview = (NestedWebView) layout.findViewById(R.id.webview);
         webview.setBackgroundColor(Color.TRANSPARENT);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webview.getSettings().setDefaultTextEncodingName("utf-8");
+		webview.getSettings().setDisplayZoomControls(false);
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setLoadWithOverviewMode(true);
         maincontent = (LinearLayout) layout.findViewById(R.id.maincontent);

@@ -14,6 +14,7 @@ import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
 import com.github.takahirom.webview_in_coodinator_layout.NestedWebView;
+import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
@@ -50,11 +51,11 @@ public class ArticlePageFragment extends Fragment {
         webview = (NestedWebView) layout.findViewById(R.id.webview);
         webview.setBackgroundColor(Color.TRANSPARENT);
         webview.getSettings().setJavaScriptEnabled(true);
-        webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webview.getSettings().setDefaultTextEncodingName("utf-8");
 		webview.getSettings().setDisplayZoomControls(false);
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setLoadWithOverviewMode(true);
+		webview.getSettings().setPluginState(WebSettings.PluginState.ON);
         maincontent = (LinearLayout) layout.findViewById(R.id.maincontent);
         refresh = (SwipeRefreshLayout) layout.findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -80,7 +81,7 @@ public class ArticlePageFragment extends Fragment {
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
         private ArrayList<ArticleData> articleList;
         private ArticleAdapter adapter;
-        private String contentUrl;
+        private String content;
 
         @Override
         protected void onPreExecute() {
@@ -98,10 +99,14 @@ public class ArticlePageFragment extends Fragment {
         protected Integer doInBackground(String... params) {
             try {
                 parser.setMenuId(params[0]).setCurrentPage(1).connect();
-                if(parser.isArticleInItForm()) {
-                    contentUrl = parser.getNonArticleContent();
+                if(parser.isNonArticleForm()) {
+                    content = parser.getNonArticleContent();
                     return 3;
                 }
+				if(parser.isMonthListForm()) {
+					content = parser.getMonthListContent();
+					return 4;
+				}
                 articleList = parser.getArticleList();
                 if(articleList.size() == 0) {
                     return 0;
@@ -136,10 +141,14 @@ public class ArticlePageFragment extends Fragment {
                 refresh.setRefreshing(false);
                 articles.setAdapter(null);
             } else if(result == 3) {
-                webview.loadUrl(contentUrl);
+                webview.loadUrl(content);
                 maincontent.setVisibility(View.GONE);
                 webview.setVisibility(View.VISIBLE);
-            }
+            } else if(result == 4) {
+				webview.loadDataWithBaseURL("http://cw.hs.kr", content, "text/html", "utf-8", "about:blank");
+                maincontent.setVisibility(View.GONE);
+                webview.setVisibility(View.VISIBLE);
+			}
 
             super.onPostExecute(result);
         }

@@ -107,9 +107,17 @@ public class ListParser {
         return this.schoolUrl;
     }
     
-    public boolean isArticleInItForm() {
+    public boolean isNonArticleForm() {
         return doc.select("thead tr th").size() == 0;
     }
+	
+	public boolean isMonthListForm() {
+		return doc.getElementsByClass("m_monthList").size() > 0;
+	}
+	
+	public String getMonthListContent() {
+		return doc.getElementsByClass("m_monthList").first().toString();
+	}
     
     public String getNonArticleContent() {
         Element link = doc.getElementById("linkFrame");

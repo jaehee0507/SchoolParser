@@ -72,7 +72,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if(article.isNotice()) {
                 holder.card.setCardBackgroundColor(Color.parseColor("#FF8A65"));
             } else {
-                holder.card.setCardBackgroundColor(Color.WHITE);
+                holder.card.setCardBackgroundColor(holder.card.getContext().getResources().getColor(R.color.cardview_light_background));
             }
         
             holder.content_readall.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +130,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             try {
                                 final ListParser parser = fragment.parser;
                                 parser.setCurrentPage(parser.getCurrentPage() + 1)
-                                      .connect();
+                                      .connect().get();
                                 final ArrayList<ArticleData> arr = parser.getArticleList();
                                 articleData.addAll(arr);
                                 

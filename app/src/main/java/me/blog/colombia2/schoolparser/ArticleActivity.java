@@ -1,13 +1,12 @@
 package me.blog.colombia2.schoolparser;
 
-import android.support.v7.app.*;
 import android.os.*;
+import android.support.v7.app.*;
 import android.view.*;
 import android.webkit.*;
-import org.jsoup.nodes.*;
-import org.jsoup.*;
 import java.io.*;
-import android.util.*;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
 
 public class ArticleActivity extends AppCompatActivity {
     WebView webview;

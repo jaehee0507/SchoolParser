@@ -24,6 +24,14 @@ public class MenuTitleParser {
                 Element a = menu.select("a").first();
                 String href = a.attr("href");
                 submenus.put(a.text(), href.substring(href.lastIndexOf("=")+1, href.length()));
+                if(href.substring(href.lastIndexOf("=")+1, href.length()).equals("M001002002")) {
+                    submenus.put("청심학사 게시판", "M001002002001");
+                    submenus.put("청심학사 Q&A", "M001002002002");
+                    submenus.put("기숙형 고등학교란...", "M001002002003");
+                    submenus.put("청심학사 소개", "M001002002004");
+                    submenus.put("운영규정 및 생활규정", "M001002002005");
+                    submenus.put("청심학사 일정표", "M001002002006");
+                }
             }
             menus.put(e.select("a").first().text(), submenus);
         }

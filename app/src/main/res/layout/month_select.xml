@@ -1,0 +1,20 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:clickable="true"
+        android:src="@drawable/ic_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#FFC107"
+        app:rippleColor="#FFB300"
+        app:fabSize="normal"
+        app:elevation="6dp"
+        app:pressedTranslationZ="6dp"/>
+
+</LinearLayout>

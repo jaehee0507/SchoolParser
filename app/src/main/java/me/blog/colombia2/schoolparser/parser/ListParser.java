@@ -1,17 +1,16 @@
 package me.blog.colombia2.schoolparser.parser;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 import java.util.regex.*;
-import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import android.util.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
+    
+    protected Connection connection;
     
     protected Document doc;
     
@@ -38,7 +37,7 @@ public class ListParser {
     public ListParser() {
         init();
     }
-    
+
     protected void init() {
         if(this.schoolUrl == null)
             this.schoolUrl = "";
@@ -50,11 +49,17 @@ public class ListParser {
             this.filterNotice = false;
     }
 
-    public ListParser connect() throws IOException {
-        doc = Jsoup.connect(schoolUrl + "/index.jsp")
-                   .timeout(CONNECT_TIMEOUT * 1000)
-                   .data("mnu", menuId)
-                   .data("page", currentPage + "").get();
+    public ListParser connect() {
+        connection = Jsoup.connect(schoolUrl + "/index.jsp")
+                          .timeout(CONNECT_TIMEOUT * 1000)
+                          .data("mnu", menuId)
+                          .data("page", currentPage + "");
+        
+        return this;
+    }
+    
+    public ListParser get() throws IOException {
+        doc = connection.get();
         
         return this;
     }
@@ -115,8 +120,23 @@ public class ListParser {
 		return doc.getElementsByClass("m_monthList").size() > 0;
 	}
 	
-	public String getMonthListContent() {
-		return doc.getElementsByClass("m_monthList").first().toString();
+	public ArrayList<ScheduleData> getMonthListContent(int year, int month) throws IOException {
+        ArrayList<ScheduleData> dataList = new ArrayList<>();
+        dataList.add(null);
+        
+        Document document = connection.data("year", year+"")
+                                      .data("cmd", "cal")
+                                      .data("month", month+"").get();
+                                      
+        Elements days = document.select(".m_wrap");
+        for(Element e : days) {
+            Elements span = e.select("div > div > span");
+            Elements data_e = e.select("div.cbox > div.title");
+            String data = data_e.size() > 0 ? data_e.first().text() : "";
+            dataList.add(new ScheduleData(year, month, Integer.parseInt(span.get(0).text(), 10), span.get(1).text(), data));
+        }
+        
+        return dataList;
 	}
     
     public String getNonArticleContent() {

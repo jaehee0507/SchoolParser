@@ -3,7 +3,6 @@ package me.blog.colombia2.schoolparser;
 import android.support.v7.widget.*;
 import android.util.*;
 import android.view.*;
-import android.webkit.*;
 import android.widget.*;
 import me.blog.colombia2.schoolparser.utils.*;
 

@@ -2,24 +2,27 @@ package me.blog.colombia2.schoolparser.tab;
 
 import android.graphics.*;
 import android.os.*;
+import android.support.design.widget.*;
 import android.support.v4.app.*;
 import android.support.v4.widget.*;
 import android.support.v7.widget.*;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
+import com.github.takahirom.webview_in_coodinator_layout.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import com.github.takahirom.webview_in_coodinator_layout.NestedWebView;
-import android.util.*;
+
+import me.blog.colombia2.schoolparser.R;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
     protected LinearLayout maincontent;
     protected String menuId;
+    protected TabLayout.Tab tab;
 
     public ListParser parser;
     public SwipeRefreshLayout refresh;
@@ -33,7 +36,15 @@ public class ArticlePageFragment extends Fragment {
     public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
-
+    
+    public void setTab(TabLayout.Tab tab) {
+        this.tab = tab;
+    }
+    
+    public TabLayout.Tab getTab() {
+        return tab;
+    }
+    
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -45,8 +56,9 @@ public class ArticlePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.main, container, false);
 
-        if(savedInstanceState != null)
+        if(savedInstanceState != null) {
             menuId = savedInstanceState.getString("menuId");
+        }
 
         webview = (NestedWebView) layout.findViewById(R.id.webview);
         webview.setBackgroundColor(Color.TRANSPARENT);
@@ -72,15 +84,20 @@ public class ArticlePageFragment extends Fragment {
         articles.setLayoutManager(llm);
         articles.setHasFixedSize(true);
 
-        ParserAsyncTask task = new ParserAsyncTask();
-        task.execute(menuId);
+        task();
 
         return layout;
+    }
+    
+    public void task() {
+        ParserAsyncTask task = new ParserAsyncTask();
+        task.execute(menuId);
     }
 
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
         private ArrayList<ArticleData> articleList;
-        private ArticleAdapter adapter;
+        private ArrayList<ScheduleData> scheduleList;
+        private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
         private String content;
 
         @Override
@@ -98,13 +115,25 @@ public class ArticlePageFragment extends Fragment {
         @Override
         protected Integer doInBackground(String... params) {
             try {
-                parser.setMenuId(params[0]).setCurrentPage(1).connect();
+                parser.setMenuId(params[0])
+                      .setCurrentPage(1).connect().get();
                 if(parser.isNonArticleForm()) {
                     content = parser.getNonArticleContent();
                     return 3;
                 }
 				if(parser.isMonthListForm()) {
-					content = parser.getMonthListContent();
+                    int year = 0, month = 0;
+                    if(((String) tab.getTag()).equals("")) {
+                        year = Calendar.getInstance().get(Calendar.YEAR);
+                        month = Calendar.getInstance().getTime().getMonth();
+                        tab.setTag(year+";"+month);
+                    } else {
+                        year = Integer.parseInt(((String) tab.getTag()).split(";")[0]);
+                        month = Integer.parseInt(((String) tab.getTag()).split(";")[1]);
+                    }
+                    
+					scheduleList = parser.getMonthListContent(year, month);
+                    adapter = new ScheduleAdapter(ArticlePageFragment.this, scheduleList);
 					return 4;
 				}
                 articleList = parser.getArticleList();
@@ -130,9 +159,6 @@ public class ArticlePageFragment extends Fragment {
             if(result == 0) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(adapter);
-                if(articleList.size() == 0) {
-
-                }
             } else if(result == 1) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(null);
@@ -142,13 +168,12 @@ public class ArticlePageFragment extends Fragment {
                 articles.setAdapter(null);
             } else if(result == 3) {
                 webview.loadUrl(content);
-                maincontent.setVisibility(View.GONE);
+                maincontent.setVisibility(View.INVISIBLE);
                 webview.setVisibility(View.VISIBLE);
             } else if(result == 4) {
-				webview.loadDataWithBaseURL("http://cw.hs.kr", content, "text/html", "utf-8", "about:blank");
-                maincontent.setVisibility(View.GONE);
-                webview.setVisibility(View.VISIBLE);
-			}
+                refresh.setRefreshing(false);
+                articles.setAdapter(adapter);
+            }
 
             super.onPostExecute(result);
         }

@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         instance = this;
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainpage);
+        setContentView(R.layout.activity_main);
 
 		DateInstance.YEAR = Calendar.getInstance().get(Calendar.YEAR);
 		DateInstance.MONTH = Calendar.getInstance().get(Calendar.MONTH) + 1;

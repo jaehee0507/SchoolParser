@@ -15,7 +15,7 @@ public class ReplyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.replies);
+        setContentView(R.layout.activity_replies);
         
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.reply_toolbar);
         setSupportActionBar(toolbar);
@@ -64,7 +64,7 @@ public class ReplyActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             if(result == 0) {
                 for(ReplyData reply : replies) {
-                    View card = LayoutInflater.from(getApplicationContext()).inflate(R.layout.reply_form, null);
+                    View card = LayoutInflater.from(getApplicationContext()).inflate(R.layout.view_reply_form, null);
                     TextView nickname = (TextView) card.findViewById(R.id.nickname);
                     TextView content = (TextView) card.findViewById(R.id.content);
                     nickname.setText(reply.getNickname());

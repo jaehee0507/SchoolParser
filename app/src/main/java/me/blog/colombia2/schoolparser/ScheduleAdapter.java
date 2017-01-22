@@ -23,9 +23,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup p1, int view_type) {
         if(view_type == 0)
-            return new ScheduleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.schedule_view, p1, false));
+            return new ScheduleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.view_schedule, p1, false));
         else {
-            return new MonthSelectViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.month_select, p1, false));
+            return new MonthSelectViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.view_month_select, p1, false));
         }
     }
 

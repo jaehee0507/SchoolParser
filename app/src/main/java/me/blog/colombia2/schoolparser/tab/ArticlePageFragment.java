@@ -17,6 +17,7 @@ import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 import me.blog.colombia2.schoolparser.R;
+import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;
@@ -54,7 +55,7 @@ public class ArticlePageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.main, container, false);
+        View layout = inflater.inflate(R.layout.view_main_frame, container, false);
 
         if(savedInstanceState != null) {
             menuId = savedInstanceState.getString("menuId");
@@ -97,6 +98,7 @@ public class ArticlePageFragment extends Fragment {
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
         private ArrayList<ArticleData> articleList;
         private ArrayList<ScheduleData> scheduleList;
+        private ArrayList<PhotoData> photoList;
         private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
         private String content;
 
@@ -117,6 +119,16 @@ public class ArticlePageFragment extends Fragment {
             try {
                 parser.setMenuId(params[0])
                       .setCurrentPage(1).connect().get();
+                if(parser.getMenuId().equals("M001002013")) {
+                    photoList = parser.getPhotoList();
+                    adapter = new PhotoAdapter(ArticlePageFragment.this, photoList);
+                    if(parser.getMaxPage() > 1) {
+                        photoList.add(null);
+                        adapter.notifyItemChanged(photoList.size());
+                    }
+
+                    return 4;
+                }
                 if(parser.isNonArticleForm()) {
                     content = parser.getNonArticleContent();
                     return 3;
@@ -136,6 +148,7 @@ public class ArticlePageFragment extends Fragment {
                     adapter = new ScheduleAdapter(ArticlePageFragment.this, scheduleList);
 					return 4;
 				}
+                
                 articleList = parser.getArticleList();
                 if(articleList.size() == 0) {
                     return 0;

@@ -11,6 +11,7 @@
         android:src="@drawable/ic_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="#FFC107"
         app:rippleColor="#FFB300"
         app:fabSize="normal"

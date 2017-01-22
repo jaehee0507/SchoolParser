@@ -34,9 +34,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup p1, int view_type) {
         RecyclerView.ViewHolder vh;
         if(view_type == 0)
-            vh = new ArticleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.card_view, p1, false));
+            vh = new ArticleViewHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.view_content_card, p1, false));
         else
-            vh = new LoadMoreHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.load_more, p1, false));
+            vh = new LoadMoreHolder(LayoutInflater.from(p1.getContext()).inflate(R.layout.view_load_more, p1, false));
         
         return vh;
     }

@@ -1,6 +1,8 @@
 package me.blog.colombia2.schoolparser.parser;
 
+import android.graphics.*;
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 import org.jsoup.*;
@@ -119,7 +121,7 @@ public class ListParser {
 	public boolean isMonthListForm() {
 		return doc.getElementsByClass("m_monthList").size() > 0;
 	}
-	
+    
 	public ArrayList<ScheduleData> getMonthListContent(int year, int month) throws IOException {
         ArrayList<ScheduleData> dataList = new ArrayList<>();
         dataList.add(null);
@@ -202,12 +204,18 @@ public class ListParser {
         return articleList;
     }
     
-    protected ArrayList<PhotoData> getPhotoList() {
+    public ArrayList<PhotoData> getPhotoList() throws MalformedURLException, IOException {
         ArrayList<PhotoData> articleList = new ArrayList<>();
         
         Elements articles = doc.select("table tr td");
+        android.util.Log.i("cheong", articles.size()+"");
         for(Element article : articles) {
-            
+            Element img = article.select("div > a > img").first();
+            Element a = article.select("div > a").first();
+            String title = img.attr("alt");
+            String hyperLink = schoolUrl+a.attr("href");
+            Bitmap photo = BitmapFactory.decodeStream(new URL(schoolUrl+img.attr("src")).openStream());
+            articleList.add(new PhotoData(title, photo, hyperLink));
         }
         
         return articleList;

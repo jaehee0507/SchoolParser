@@ -23,7 +23,7 @@ public class SchoolFoodFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.school_food, container, false);
+        View layout = inflater.inflate(R.layout.view_school_food, container, false);
         breakfast = (TextView) layout.findViewById(R.id.breakfast);
         lunch = (TextView) layout.findViewById(R.id.lunch);
         dinner = (TextView) layout.findViewById(R.id.dinner);

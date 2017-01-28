@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void startParser() {
+        new VersionChecker().checkVersionAndDoUpdate();
         SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
         if(!pref.getString("menulist", "null").equals("null")) {
             menuArr = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));

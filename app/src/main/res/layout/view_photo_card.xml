@@ -9,6 +9,8 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardPreventCornerOverlap="false"
+    card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="2dp">
 
     <LinearLayout
@@ -21,14 +23,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"/>
+        
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/title"
             android:textSize="14dp"
             android:textColor="#000000"
-            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="5dp"/>
+        
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="80dp"
+            android:layout_weight="0"
+            android:layout_height="match_parent"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="#d2d2d2"
+            app:mrl_rippleAlpha="0.5">
+
+            <Button
+                android:id="@+id/attachments"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:textColor="#000000"
+                android:textSize="11dp"
+                android:background="#00000000"
+                android:text="@string/attachments"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+        
+        </LinearLayout>
 
     </LinearLayout>
 

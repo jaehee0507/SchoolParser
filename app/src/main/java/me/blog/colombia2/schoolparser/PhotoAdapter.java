@@ -1,5 +1,6 @@
 package me.blog.colombia2.schoolparser;
 
+import android.content.*;
 import android.os.*;
 import android.support.v7.widget.*;
 import android.view.*;
@@ -8,6 +9,10 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.tab.*;
+import me.blog.colombia2.schoolparser.utils.*;
+import org.jsoup.nodes.*;
+import org.jsoup.*;
+import org.jsoup.select.*;
 
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -42,7 +47,22 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             PhotoViewHolder holder = (PhotoViewHolder) a;
             holder.title.setText(photo.getTitle());
             holder.image.setImageBitmap(photo.getPreview());
-            holder.card.setPreventCornerOverlap(false);
+            
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(MainActivity.instance, ArticleActivity.class);
+                    i.putExtra("url", photo.getHyperLink());
+                    MainActivity.instance.startActivity(i);
+                }
+            });
+            
+            holder.attachments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new AttachmentsAsyncTask(photo).execute();
+                    }
+                });
         } else if(a instanceof LoadMoreHolder) {
             final LoadMoreHolder holder = (LoadMoreHolder) a;
 
@@ -104,6 +124,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
         protected ImageView image;
         protected TextView title;
+        protected Button attachments;
         protected CardView card;
 
         public PhotoViewHolder(View itemView) {
@@ -111,7 +132,53 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             image = (ImageView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
+            attachments = (Button) itemView.findViewById(R.id.attachments);
             card = (CardView) itemView;
+        }
+    }
+    
+    class AttachmentsAsyncTask extends AsyncTask<String, String, ArrayList<FileData>> {
+        private PhotoData photo;
+
+        public AttachmentsAsyncTask(PhotoData photo) {
+            this.photo = photo;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            
+        }
+
+        @Override
+        protected ArrayList<FileData> doInBackground(String... params) {
+            try {
+                Document doc = Jsoup.connect(photo.getHyperLink())
+                                    .timeout(10 * 1000)
+                                    .get();
+                ArrayList<FileData> result = new ArrayList<>();
+                Elements attachments = doc.select("tr > td > p > a");
+                for(Element e : attachments) {
+                    String hyperLink = e.attr("href");
+                    String title = e.attr("title").replace(" 첨부파일 다운받기", "");
+                    result.add(new FileData(title, SharedConstants.SCHOOL_URL + hyperLink));
+                }
+                return result;
+            } catch(IOException e) {
+                return new ArrayList<FileData>();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<FileData> result) {
+            if(result.size() > 0) {
+                SharedConstants.ATTACHMENTS = result;
+                Intent i = new Intent(MainActivity.instance, AttachmentsActivity.class);
+                MainActivity.instance.startActivity(i);
+            } else if(result.size() == 0) {
+                //Nothing to do
+            }
+
+            super.onPostExecute(result);
         }
     }
 }

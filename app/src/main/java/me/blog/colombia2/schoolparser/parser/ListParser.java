@@ -208,13 +208,13 @@ public class ListParser {
         ArrayList<PhotoData> articleList = new ArrayList<>();
         
         Elements articles = doc.select("table tr td");
-        android.util.Log.i("cheong", articles.size()+"");
         for(Element article : articles) {
             Element img = article.select("div > a > img").first();
             Element a = article.select("div > a").first();
             String title = img.attr("alt");
             String hyperLink = schoolUrl+a.attr("href");
-            Bitmap photo = BitmapFactory.decodeStream(new URL(schoolUrl+img.attr("src")).openStream());
+            URL con = new URL(schoolUrl+img.attr("src"));
+            Bitmap photo = BitmapFactory.decodeStream(con.openStream());
             articleList.add(new PhotoData(title, photo, hyperLink));
         }
         

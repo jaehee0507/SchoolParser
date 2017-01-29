@@ -215,6 +215,7 @@ public class ListParser {
             String hyperLink = schoolUrl+a.attr("href");
             URL con = new URL(schoolUrl+img.attr("src"));
             Bitmap photo = BitmapFactory.decodeStream(con.openStream());
+            android.util.Log.i("cheong", photo.getWidth()+"*"+photo.getHeight());
             articleList.add(new PhotoData(title, photo, hyperLink));
         }
         

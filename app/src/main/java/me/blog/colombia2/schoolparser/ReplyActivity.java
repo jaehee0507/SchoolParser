@@ -54,7 +54,7 @@ public class ReplyActivity extends AppCompatActivity {
         protected Integer doInBackground(String... p1) {
             try {
                 replies = MenuTitleParser.getReplyList(url);
-            } catch(IOException e) {
+            } catch(Exception e) {
                 return 1;
             }
             return 0;

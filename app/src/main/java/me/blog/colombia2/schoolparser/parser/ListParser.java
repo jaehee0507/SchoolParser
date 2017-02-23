@@ -204,7 +204,7 @@ public class ListParser {
         return articleList;
     }
     
-    public ArrayList<PhotoData> getPhotoList() throws MalformedURLException, IOException {
+    public ArrayList<PhotoData> getPhotoList() {
         ArrayList<PhotoData> articleList = new ArrayList<>();
         
         Elements articles = doc.select("table tr td");
@@ -213,10 +213,7 @@ public class ListParser {
             Element a = article.select("div > a").first();
             String title = img.attr("alt");
             String hyperLink = schoolUrl+a.attr("href");
-            URL con = new URL(schoolUrl+img.attr("src"));
-            Bitmap photo = BitmapFactory.decodeStream(con.openStream());
-            android.util.Log.i("cheong", photo.getWidth()+"*"+photo.getHeight());
-            articleList.add(new PhotoData(title, photo, hyperLink));
+            articleList.add(new PhotoData(title, schoolUrl+img.attr("src"), hyperLink));
         }
         
         return articleList;

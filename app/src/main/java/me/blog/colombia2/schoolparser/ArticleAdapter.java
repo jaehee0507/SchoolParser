@@ -118,7 +118,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             
             holder.loadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     loading = true;
                     holder.loadMore.setVisibility(View.INVISIBLE);
                     holder.loading.setVisibility(View.VISIBLE);
@@ -149,6 +149,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 });
                             } catch(IOException e) {
                                 e.printStackTrace();
+                                loading = false;
+                                articleData.remove(orgin_size-1);
+                                notifyItemRemoved(orgin_size-1);
+                                if(fragment.parser.getMaxPage() > fragment.parser.getCurrentPage()) {
+                                    articleData.add(null);
+                                    notifyItemInserted(articleData.size());
+                                }
+                                ErrorDisplayer.showInternetError(v);
                             }
                         }
                     }).start();

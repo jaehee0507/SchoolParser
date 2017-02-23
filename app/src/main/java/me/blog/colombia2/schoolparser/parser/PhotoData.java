@@ -1,15 +1,16 @@
 package me.blog.colombia2.schoolparser.parser;
 
 import android.graphics.*;
+import java.net.*;
 
 public class PhotoData {
     protected String title;
-    protected Bitmap preview;
+    protected String previewUrl;
     protected String hyperLink;
     
-    public PhotoData(String title, Bitmap preview, String hyperLink) {
+    public PhotoData(String title, String previewUrl, String hyperLink) {
         this.title = title;
-        this.preview = preview;
+        this.previewUrl = previewUrl;
         this.hyperLink = hyperLink;
     }
     
@@ -17,8 +18,8 @@ public class PhotoData {
         return title;
     }
     
-    public Bitmap getPreview() {
-        return preview;
+    public String getPreview() {
+        return previewUrl;
     }
     
     public String getHyperLink() {

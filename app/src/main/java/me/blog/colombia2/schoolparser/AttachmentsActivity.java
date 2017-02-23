@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import android.support.v7.widget.*;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;
@@ -145,7 +146,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         progress.setLayoutParams(params);
         layout.addView(progress);
 
-        CheckBox checkbox = new CheckBox(this);
+        AppCompatCheckBox checkbox = new AppCompatCheckBox(this);
         checkbox.setId(0);
         StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(Color.argb(20, 0, 0, 0)));

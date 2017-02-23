@@ -7,9 +7,12 @@ import android.webkit.*;
 import java.io.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
+import android.widget.*;
+import android.util.*;
 
 public class ArticleActivity extends AppCompatActivity {
     WebView webview;
+    View progress;
     String url;
     
     @Override
@@ -21,8 +24,26 @@ public class ArticleActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
+        progress = findViewById(R.id.toolbar_progress);
         webview = (WebView) findViewById(R.id.web);
         webview.getSettings().setJavaScriptEnabled(true);
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView wv, int prgrs) {
+                float prog = ((float) prgrs)/100.0f;
+                progress.setLayoutParams(new RelativeLayout.LayoutParams((int) (prog * webview.getWidth()), (int) TypedValue.applyDimension(
+                                                    TypedValue.COMPLEX_UNIT_DIP,
+                                                    5.0f,
+                                                    getResources().getDisplayMetrics())));
+                                                    
+                if(prgrs == 100) {
+                    progress.setLayoutParams(new RelativeLayout.LayoutParams(0, (int) TypedValue.applyDimension(
+                                                                                 TypedValue.COMPLEX_UNIT_DIP,
+                                                                                 5.0f,
+                                                                                 getResources().getDisplayMetrics())));
+                }
+            }
+        });
         
         if(savedInstanceState == null)
             url = getIntent().getStringExtra("url");

@@ -13,6 +13,8 @@ import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.nodes.*;
 import org.jsoup.*;
 import org.jsoup.select.*;
+import android.webkit.*;
+import android.graphics.*;
 
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -44,9 +46,19 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final PhotoData photo = photoData.get(position);
 
         if(a instanceof PhotoViewHolder) {
-            PhotoViewHolder holder = (PhotoViewHolder) a;
+            final PhotoViewHolder holder = (PhotoViewHolder) a;
             holder.title.setText(photo.getTitle());
-            holder.image.setImageBitmap(photo.getPreview());
+            
+            holder.imageWeb.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    return (event.getAction() == MotionEvent.ACTION_MOVE);
+                }
+            });
+            holder.imageWeb.getSettings().setLoadWithOverviewMode(true);
+            holder.imageWeb.getSettings().setUseWideViewPort(true);
+            holder.imageWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            holder.imageWeb.setBackgroundColor(Color.TRANSPARENT);
+            holder.imageWeb.loadDataWithBaseURL(null, "<html><img src=\""+photo.getPreview()+"\" width=\"400\"/></html>", "text/html", "utf-8", null);
             
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,7 +88,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             holder.loadMore.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(final View v) {
                         loading = true;
                         holder.loadMore.setVisibility(View.INVISIBLE);
                         holder.loading.setVisibility(View.VISIBLE);
@@ -107,6 +119,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                             });
                                     } catch(IOException e) {
                                         e.printStackTrace();
+                                        loading = false;
+                                        photoData.remove(orgin_size-1);
+                                        notifyItemRemoved(orgin_size-1);
+                                        if(fragment.parser.getMaxPage() > fragment.parser.getCurrentPage()) {
+                                            photoData.add(null);
+                                            notifyItemInserted(photoData.size());
+                                        }
+                                        ErrorDisplayer.showInternetError(v);
                                     }
                                 }
                             }).start();
@@ -122,7 +142,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
-        protected ImageView image;
+        protected WebView imageWeb;
         protected TextView title;
         protected Button attachments;
         protected CardView card;
@@ -130,7 +150,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public PhotoViewHolder(View itemView) {
             super(itemView);
 
-            image = (ImageView) itemView.findViewById(R.id.image);
+            imageWeb = (WebView) itemView.findViewById(R.id.image);
             title = (TextView) itemView.findViewById(R.id.title);
             attachments = (Button) itemView.findViewById(R.id.attachments);
             card = (CardView) itemView;

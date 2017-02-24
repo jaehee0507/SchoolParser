@@ -1,20 +1,20 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.graphics.*;
 import android.os.*;
 import android.support.v7.widget.*;
 import android.view.*;
+import android.webkit.*;
 import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import org.jsoup.nodes.*;
 import org.jsoup.*;
+import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import android.webkit.*;
-import android.graphics.*;
 
 public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -58,7 +58,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.imageWeb.getSettings().setUseWideViewPort(true);
             holder.imageWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             holder.imageWeb.setBackgroundColor(Color.TRANSPARENT);
-            holder.imageWeb.loadDataWithBaseURL(null, "<html><img src=\""+photo.getPreview()+"\" width=\"400\"/></html>", "text/html", "utf-8", null);
+            holder.imageWeb.loadDataWithBaseURL(null, "<html><img src=\""+photo.getPreview()+"\" width=\"400\" height=\"300\"/></html>", "text/html", "utf-8", null);
             
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -191,8 +191,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Override
         protected void onPostExecute(ArrayList<FileData> result) {
             if(result.size() > 0) {
-                SharedConstants.ATTACHMENTS = result;
                 Intent i = new Intent(MainActivity.instance, AttachmentsActivity.class);
+                i.putExtra("attachments", result);
                 MainActivity.instance.startActivity(i);
             } else if(result.size() == 0) {
                 //Nothing to do

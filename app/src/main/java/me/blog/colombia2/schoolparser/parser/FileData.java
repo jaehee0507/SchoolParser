@@ -1,7 +1,8 @@
 package me.blog.colombia2.schoolparser.parser;
-import java.util.*;
 
-public class FileData {
+import java.io.*;
+
+public class FileData implements Serializable {
     final protected String title;
     final protected String hyperLink;
 

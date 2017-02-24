@@ -17,7 +17,6 @@ import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 import me.blog.colombia2.schoolparser.R;
-import android.util.*;
 
 public class ArticlePageFragment extends Fragment {
     protected RecyclerView articles;

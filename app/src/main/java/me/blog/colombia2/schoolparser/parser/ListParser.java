@@ -1,8 +1,6 @@
 package me.blog.colombia2.schoolparser.parser;
 
-import android.graphics.*;
 import java.io.*;
-import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 import org.jsoup.*;

@@ -8,6 +8,7 @@ import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v7.app.*;
+import android.support.v7.widget.*;
 import android.util.*;
 import android.view.*;
 import android.webkit.*;
@@ -16,7 +17,6 @@ import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.support.v7.widget.*;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;
@@ -32,7 +32,7 @@ public class AttachmentsActivity extends AppCompatActivity {
 
         views = new HashMap<>();
 
-        ArrayList<FileData> files = SharedConstants.ATTACHMENTS;
+        ArrayList<FileData> files = (ArrayList<FileData>) getIntent().getSerializableExtra("attachments");
         LinearLayout layout = (LinearLayout) findViewById(R.id.content_layout);
         for(FileData attach : files) {
             RelativeLayout checkbox = getCheckBoxLayout(attach);

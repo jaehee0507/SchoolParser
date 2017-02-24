@@ -87,8 +87,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.content_attachments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SharedConstants.ATTACHMENTS = article.getAttachments();
                     Intent i = new Intent(MainActivity.instance, AttachmentsActivity.class);
+                    i.putExtra("attachments", article.getAttachments());
                     MainActivity.instance.startActivity(i);
                 }
             });

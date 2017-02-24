@@ -1,12 +1,15 @@
 package me.blog.colombia2.schoolparser;
 
 import android.os.*;
+import android.support.design.widget.*;
 import android.support.v7.app.*;
 import android.util.*;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
 import java.io.*;
+import java.net.*;
+import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 
@@ -44,6 +47,7 @@ public class ArticleActivity extends AppCompatActivity {
                 }
             }
         });
+        registerForContextMenu(webview);
         
         if(savedInstanceState == null)
             url = getIntent().getStringExtra("url");
@@ -51,6 +55,43 @@ public class ArticleActivity extends AppCompatActivity {
             url = savedInstanceState.getString("url");
             
         new ArticleAsyncTask().execute();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        // TODO: Implement this method
+        super.onCreateContextMenu(menu, v, menuInfo);
+        
+        final WebView.HitTestResult result = webview.getHitTestResult();
+        if(result.getType() == WebView.HitTestResult.IMAGE_TYPE || result.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+            menu.add("이미지 저장").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    try {
+                        FileDownloader downloader = new FileDownloader(result.getExtra(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/"+result.getExtra().split("/")[result.getExtra().split("/").length-1]);
+                        downloader.setFileDownloadListener(new FileDownloader.FileDownloadListener() {
+                            public void onDownloadStart(int fileSize) {}
+                            public void onDownloading(int currentBytes) {}
+                            public void onDownloadError(Exception err) {}
+                            public void onDownloadComplete(final File result) {
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if(result.getPath().length() > 37)
+                                            Snackbar.make(getWindow().getDecorView(), result.getPath().substring(0, 17)+"..."+result.getPath().substring(result.getPath().length()-17, result.getPath().length())+" 에 다운로드 완료", Snackbar.LENGTH_SHORT).show();
+                                        else
+                                            Snackbar.make(getWindow().getDecorView(), result.getPath()+" 에 다운로드 완료", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+                        downloader.start();
+                    } catch(MalformedURLException e) {
+                        
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
     @Override

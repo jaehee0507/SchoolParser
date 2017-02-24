@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/article_toolbar"
         android:layout_width="match_parent"
@@ -13,30 +13,36 @@
         android:elevation="0dp"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="5dp">
-        
-        <View
-            android:id="@+id/toolbar_shadow"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <WebView
+            android:id="@+id/web"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/toolbar_dropshadow"/>
+            android:screenOrientation="portrait"/>
         
-        <View
-            android:id="@+id/toolbar_progress"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="#2196f3"/>
-    
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="5dp">
+
+            <View
+                android:id="@+id/toolbar_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/toolbar_dropshadow"/>
+
+            <View
+                android:id="@+id/toolbar_progress"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#2196f3"/>
+
+        </RelativeLayout>
+
     </RelativeLayout>
-    
-    <WebView
-        android:id="@+id/web"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:screenOrientation="portrait"/>
-    
+
 </LinearLayout>

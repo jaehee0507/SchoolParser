@@ -69,7 +69,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.reddot.setVisibility(View.VISIBLE);
             else
                 holder.reddot.setVisibility(View.GONE);*/
-            holder.dateText.setText(article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
+            if(article.isNew()) {
+                SpannableString text = new SpannableString("JJH | "+article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
+                Drawable d = holder.card.getContext().getResources().getDrawable(R.drawable.newicon);
+                d.setBounds(0, 0, holder.dateText.getLineHeight(), holder.dateText.getLineHeight());
+                text.setSpan(new ImageSpan(d), 0, 3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.dateText.setText(text);
+            } else
+                holder.dateText.setText(article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

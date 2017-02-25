@@ -11,6 +11,10 @@ import android.widget.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
+import android.view.animation.*;
+import android.util.*;
 
 public class MainActivity extends AppCompatActivity {
     public ViewPager viewPager;
@@ -82,6 +86,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        share.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupWindow popup = new PopupWindow(getBaseContext());
+                ImageView img = new ImageView(getBaseContext());
+                img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                img.setImageResource(R.drawable.logo_blue);
+                img.setAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.scale_anim));
+                int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60.0f, getResources().getDisplayMetrics());
+                img.setPadding(padding, padding, padding, padding);
+                popup.setFocusable(true);
+                popup.setContentView(img);
+                Point p = new Point();
+                getWindowManager().getDefaultDisplay().getSize(p);
+                popup.setWidth(p.x);
+                popup.setHeight(p.y);
+                popup.setBackgroundDrawable(new BitmapDrawable(ImageEditor.blur(getBaseContext(), ImageEditor.captureScreen(findViewById(R.id.main_content).getRootView()), 25.0f)));
+                popup.setAnimationStyle(R.style.PopupAnim);
+                popup.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+                return true;
+            }
+        });
     }
 
     @Override

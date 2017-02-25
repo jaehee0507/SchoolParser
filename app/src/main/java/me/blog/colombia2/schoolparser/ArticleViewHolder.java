@@ -9,6 +9,7 @@ import me.blog.colombia2.schoolparser.utils.*;
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
     protected TextView titleText;
     protected TextView dateText;
+    protected TextView reddot;
     protected LinearLayout content;
     protected ProgressBar loading;
     protected TextView content_text;
@@ -22,6 +23,7 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         titleText = (TextView) itemView.findViewById(R.id.title);
         dateText  = (TextView) itemView.findViewById(R.id.date);
+        reddot    = (TextView) itemView.findViewById(R.id.title_new);
         content   = (LinearLayout) itemView.findViewById(R.id.content);
         card      = (CardView) itemView;
         opened    = false;

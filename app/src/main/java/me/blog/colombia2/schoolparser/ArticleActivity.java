@@ -1,5 +1,7 @@
 package me.blog.colombia2.schoolparser;
 
+import android.content.*;
+import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v7.app.*;
@@ -77,9 +79,25 @@ public class ArticleActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     public void run() {
                                         if(result.getPath().length() > 37)
-                                            Snackbar.make(getWindow().getDecorView(), result.getPath().substring(0, 17)+"..."+result.getPath().substring(result.getPath().length()-17, result.getPath().length())+" 에 다운로드 완료", Snackbar.LENGTH_SHORT).show();
+                                            Snackbar.make(getWindow().getDecorView(), result.getPath().substring(0, 17)+"..."+result.getPath().substring(result.getPath().length()-17, result.getPath().length())+" 에 다운로드 완료", Snackbar.LENGTH_SHORT)
+                                            .setAction("열기", new View.OnClickListener() {
+                                                public void onClick(View v) {
+                                                    Intent toLaunch = new Intent();
+                                                    toLaunch.setAction(Intent.ACTION_VIEW);
+                                                    toLaunch.setDataAndType(Uri.fromFile(result), getContentResolver().getType(Uri.fromFile(result)));
+                                                    startActivity(toLaunch);
+                                                }
+                                            }).show();
                                         else
-                                            Snackbar.make(getWindow().getDecorView(), result.getPath()+" 에 다운로드 완료", Snackbar.LENGTH_SHORT).show();
+                                            Snackbar.make(getWindow().getDecorView(), result.getPath()+" 에 다운로드 완료", Snackbar.LENGTH_SHORT)
+                                            .setAction("열기", new View.OnClickListener() {
+                                                public void onClick(View v) {
+                                                    Intent toLaunch = new Intent();
+                                                    toLaunch.setAction(Intent.ACTION_VIEW);
+                                                    toLaunch.setDataAndType(Uri.fromFile(result), getContentResolver().getType(Uri.fromFile(result)));
+                                                    startActivity(toLaunch);
+                                                }
+                                            }).show();
                                     }
                                 });
                             }
@@ -100,11 +118,20 @@ public class ArticleActivity extends AppCompatActivity {
         
         outState.putString("url", url);
     }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.article, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
             finish();
+        } else if(item.getItemId() == R.id.export) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         }
         
         return super.onOptionsItemSelected(item);

@@ -10,9 +10,10 @@ public class ArticleData {
     final protected int visitorCount;
     final protected boolean isNotice;
     final protected boolean hasReply;
+    final protected boolean isNew;
     final protected ArrayList<FileData> attachments;
 
-    public ArticleData(String title, String date, String writer, String hyperLink, int visitorCount, boolean isNotice, boolean hasReply, ArrayList<FileData> attachments) {
+    public ArticleData(String title, String date, String writer, String hyperLink, int visitorCount, boolean isNotice, boolean hasReply, boolean isNew, ArrayList<FileData> attachments) {
         this.title = title;
         this.date = date;
         this.writer = writer;
@@ -20,6 +21,7 @@ public class ArticleData {
         this.visitorCount = visitorCount;
         this.isNotice = isNotice;
         this.hasReply = hasReply;
+        this.isNew = isNew;
         this.attachments = attachments;
     }
 
@@ -49,6 +51,10 @@ public class ArticleData {
     
     public boolean hasReply() {
         return this.hasReply;
+    }
+    
+    public boolean isNew() {
+        return this.isNew;
     }
 
     public ArrayList<FileData> getAttachments() {

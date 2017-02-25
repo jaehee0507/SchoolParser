@@ -5,4 +5,9 @@
         <item name="colorPrimaryDark">#3949AB</item>
         <item name="colorAccent">#FFC107</item>
 	</style>
+    
+    <style name="PopupAnim">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
 </resources>

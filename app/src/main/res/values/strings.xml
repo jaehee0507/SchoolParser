@@ -14,5 +14,6 @@
     <string name="categories">게시판 설정</string>
     <string name="finish">완료</string>
     <string name="see_replies">댓글 보기</string>
+    <string name="export">다른 브라우저로 보기</string>
 
 </resources>

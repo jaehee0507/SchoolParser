@@ -184,9 +184,11 @@ public class ListParser {
             String date = article.select("td").get(date_i).text();
             String writer = article.select("td").get(writer_i).text();
             int visitorCount = Integer.parseInt(article.select("td").get(visitorCount_i).text(), 10);
-            String title = !isNotice ? titleData.select("a").first().text() : titleData.select("a span").first().text();
+           // String title = !isNotice ? titleData.select("a").first().text() : titleData.select("a span").first().text();
+            String title = !isNotice ? (titleData.select("a").first().attr("title").equals("") ? titleData.select("a").first().text() : titleData.select("a").first().attr("title")) : titleData.select("a span").first().text();
             String hyperLink = titleData.select("a").first().attr("href");
             boolean hasReply = Pattern.matches(".*\\[[0-9]+\\] *$", title);
+            boolean isNew = titleData.select("img[alt=\"새글\"").size() > 0;
             
             ArrayList<FileData> attachments = new ArrayList<>();
             Elements attachElems = article.select(".m_limage a");
@@ -196,7 +198,7 @@ public class ListParser {
                 attachments.add(new FileData(file_title, schoolUrl+file_hyperLink));
             }
             
-            articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, hasReply, attachments));
+            articleList.add(new ArticleData(title, date, writer, schoolUrl+hyperLink, visitorCount, isNotice, hasReply, isNew, attachments));
         }
         
         return articleList;

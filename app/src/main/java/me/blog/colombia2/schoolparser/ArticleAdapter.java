@@ -1,11 +1,15 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.content.res.*;
 import android.graphics.*;
+import android.graphics.drawable.*;
 import android.os.*;
 import android.support.v7.widget.*;
 import android.text.*;
+import android.text.style.*;
 import android.view.*;
+import android.widget.*;
 import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
@@ -13,6 +17,7 @@ import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
+import android.util.*;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected ArticlePageFragment fragment;
@@ -52,7 +57,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.content_text.setText("");
             holder.opened = false;
                 
-            holder.titleText.setText(article.getTitle());
+            //holder.reddot.setTransformationMethod(null);
+            SpannableString str = new SpannableString("jjh");
+            Resources resources = fragment.getContext().getResources();
+            Drawable d = resources.getDrawable(R.drawable.reddot);
+            d.setBounds(0, 0, holder.reddot.getLineHeight(), holder.reddot.getLineHeight());
+            ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
+            str.setSpan(span, 0, 1, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+            holder.reddot.setText(str);
+            if(article.isNew())
+                holder.reddot.setVisibility(View.VISIBLE);
+            else
+                holder.reddot.setVisibility(View.INVISIBLE);
             holder.dateText.setText(article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,6 +120,21 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 });
             } else {
                 holder.content_replies.setOnClickListener(null);
+            }
+            
+            if(article.getTitle().contains("RE:")) {
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+                int occurs = (article.getTitle().length() - article.getTitle().replace("RE:", "").length()) / 3;
+                params.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 17.0f, holder.card.getContext().getResources().getDisplayMetrics())*occurs;
+                holder.card.setLayoutParams(params);
+                SpannableString titlespan = new SpannableString(article.getTitle());
+                titlespan.setSpan(new ForegroundColorSpan(Color.parseColor("#e53935")), 0, occurs*3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.titleText.setText(titlespan);
+            } else {
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.card.getLayoutParams();
+                params.leftMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, holder.card.getContext().getResources().getDisplayMetrics());
+                holder.card.setLayoutParams(params);
+                holder.titleText.setText(article.getTitle());
             }
         } else if(a instanceof LoadMoreHolder) {
             final LoadMoreHolder holder = (LoadMoreHolder) a;

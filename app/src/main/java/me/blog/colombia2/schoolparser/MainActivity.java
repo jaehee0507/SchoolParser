@@ -1,20 +1,19 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
 import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v4.view.*;
 import android.support.v7.app.*;
+import android.util.*;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
-import android.view.animation.*;
-import android.util.*;
 
 public class MainActivity extends AppCompatActivity {
     public ViewPager viewPager;
@@ -73,39 +72,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!((SchoolFoodFragment) adapter.getItem(0)).isLoading()) {
-                        Intent i = new Intent();
-                        i.setAction(Intent.ACTION_SEND);
-                        i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_TEXT, ((SchoolFoodFragment) adapter.getItem(0)).getMenus());
-                        startActivity(Intent.createChooser(i, "공유하기"));
-                    } else {
-                        Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        share.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                PopupWindow popup = new PopupWindow(getBaseContext());
-                ImageView img = new ImageView(getBaseContext());
-                img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                img.setImageResource(R.drawable.logo_blue);
-                img.setAnimation(AnimationUtils.loadAnimation(getBaseContext(), R.anim.scale_anim));
-                int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60.0f, getResources().getDisplayMetrics());
-                img.setPadding(padding, padding, padding, padding);
-                popup.setFocusable(true);
-                popup.setContentView(img);
-                Point p = new Point();
-                getWindowManager().getDefaultDisplay().getSize(p);
-                popup.setWidth(p.x);
-                popup.setHeight(p.y);
-                popup.setBackgroundDrawable(new BitmapDrawable(ImageEditor.blur(getBaseContext(), ImageEditor.captureScreen(findViewById(R.id.main_content).getRootView()), 25.0f)));
-                popup.setAnimationStyle(R.style.PopupAnim);
-                popup.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
-                return true;
+            public void onClick(View v) {
+                if(!((SchoolFoodFragment) adapter.getItem(0)).isLoading()) {
+                    Intent i = new Intent();
+                    i.setAction(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_TEXT, ((SchoolFoodFragment) adapter.getItem(0)).getMenus());
+                    startActivity(Intent.createChooser(i, "공유하기"));
+                } else {
+                    Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -116,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         menu.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Intent i = new Intent(MainActivity.this, SchoolSettingActivity.class);
+                    Intent i = new Intent(MainActivity.this, PreferencesActivity.class);
                     startActivity(i);
 
                     return true;
@@ -127,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void startParser() {
-        new VersionChecker().checkVersionAndDoUpdate();
         SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
+        SharedPreferences pref2 = getSharedPreferences("appData", MODE_PRIVATE);
+        if(pref2.getBoolean("autoUpdate", true))
+            new VersionChecker().checkVersionAndDoUpdate();
         if(!pref.getString("menulist", "null").equals("null")) {
             menuArr = new ArrayList<String>(Arrays.asList(pref.getString("menulist", "").split(";")));
             menuNameArr = new ArrayList<String>(Arrays.asList(pref.getString("menunames", "").split(";")));

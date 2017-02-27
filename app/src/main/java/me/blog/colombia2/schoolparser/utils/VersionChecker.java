@@ -11,6 +11,7 @@ import me.blog.colombia2.schoolparser.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import android.preference.*;
 
 public class VersionChecker {
     public void checkVersionAndDoUpdate() {
@@ -61,6 +62,14 @@ public class VersionChecker {
                         public void onClick(DialogInterface d, int i) {
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=me.blog.colombia2.schoolparser"));
                             MainActivity.instance.startActivity(intent);
+                        }
+                    });
+                builder.setNeutralButton("다시 보지 않기", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface d, int i) {
+                            SharedPreferences.Editor pref = MainActivity.instance.getSharedPreferences("appData", MainActivity.MODE_PRIVATE).edit();
+                            pref.putBoolean("autoUpdate", false);
+                            pref.commit();
                         }
                     });
                 builder.create().show();

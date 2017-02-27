@@ -69,7 +69,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.reddot.setVisibility(View.VISIBLE);
             else
                 holder.reddot.setVisibility(View.GONE);*/
-            if(article.isNew()) {
+            if(article.isNew() && fragment.getContext().getSharedPreferences("appData", Context.MODE_PRIVATE).getBoolean("newVisible", true)) {
                 SpannableString text = new SpannableString("JJH | "+article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
                 Drawable d = holder.card.getContext().getResources().getDrawable(R.drawable.newicon);
                 d.setBounds(0, 0, holder.dateText.getLineHeight(), holder.dateText.getLineHeight());

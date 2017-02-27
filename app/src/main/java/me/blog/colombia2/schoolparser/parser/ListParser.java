@@ -6,6 +6,8 @@ import java.util.regex.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
@@ -188,7 +190,9 @@ public class ListParser {
             String title = !isNotice ? (titleData.select("a").first().attr("title").equals("") ? titleData.select("a").first().text() : titleData.select("a").first().attr("title")) : titleData.select("a span").first().text();
             String hyperLink = titleData.select("a").first().attr("href");
             boolean hasReply = Pattern.matches(".*\\[[0-9]+\\] *$", title);
-            boolean isNew = titleData.select("img[alt=\"새글\"").size() > 0;
+            DateTimeFormatter format = DateTimeFormat.forPattern("yyyy/MM/dd");
+            boolean isNew = Days.daysBetween(format.parseDateTime(date), DateTime.now()).getDays() <= 4;
+          //  boolean isNew = titleData.select("img[alt=\"새글\"").size() > 0;
             
             ArrayList<FileData> attachments = new ArrayList<>();
             Elements attachElems = article.select(".m_limage a");

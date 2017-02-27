@@ -1,0 +1,152 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/school_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <View
+        android:id="@+id/toolbar_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/toolbar_dropshadow"/>
+
+    <TextView
+        android:id="@+id/pref_title"
+        android:textStyle="bold"
+        android:textSize="26dp"
+        android:textColor="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="12dp"/>
+
+    <LinearLayout
+        android:id="@+id/menulayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/pref_info"
+            android:padding="12dp"
+            android:textColor="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        
+        <android.support.v4.widget.NestedScrollView
+            android:clipToPadding="false"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/preflist"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
+                    
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/schoolsetting"
+                        android:clickable="true"
+                        android:src="@drawable/ic_reorder_white_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/fab_margin"
+                        app:backgroundTint="#FF9800"
+                        app:rippleColor="#FB8C00"
+                        app:fabSize="normal"
+                        app:elevation="6dp"
+                        app:pressedTranslationZ="6dp"/>
+                    
+                    <TextView
+                        android:text="@string/categories"
+                        android:textSize="24dp"
+                        android:textColor="#000000"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/appinfo"
+                        android:clickable="true"
+                        android:src="@drawable/ic_info_outline_white_24dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/fab_margin"
+                        app:backgroundTint="#FF5722"
+                        app:rippleColor="#F4511E"
+                        app:fabSize="normal"
+                        app:elevation="6dp"
+                        app:pressedTranslationZ="6dp"/>
+
+                    <TextView
+                        android:text="@string/appinfo"
+                        android:textSize="24dp"
+                        android:textColor="#000000"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+                
+                <TextView
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textSize="12sp"
+                    android:text="앱 설정"
+                    android:textColor="#000000"
+                    android:background="#EEEEEE"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/autoupdate"
+                    android:textSize="16sp"
+                    android:text="자동 업데이트"
+                    android:textColor="#000000"
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/newvisible"
+                    android:textSize="16sp"
+                    android:text="신규 게시글 N 표시"
+                    android:textColor="#000000"
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+        
+    </LinearLayout>
+
+</LinearLayout>

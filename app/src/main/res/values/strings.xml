@@ -15,5 +15,7 @@
     <string name="finish">완료</string>
     <string name="see_replies">댓글 보기</string>
     <string name="export">다른 브라우저로 보기</string>
+    <string name="settings">설정</string>
+    <string name="appinfo">앱 정보</string>
 
 </resources>

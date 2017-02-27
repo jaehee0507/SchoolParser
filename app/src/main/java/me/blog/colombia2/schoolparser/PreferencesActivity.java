@@ -1,16 +1,17 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
+import android.content.pm.*;
+import android.graphics.*;
+import android.graphics.drawable.*;
 import android.os.*;
 import android.support.design.widget.*;
 import android.support.v7.app.*;
-import android.view.*;
-import android.widget.*;
 import android.support.v7.widget.*;
 import android.text.*;
-import android.graphics.drawable.*;
 import android.text.style.*;
-import android.graphics.*;
+import android.view.*;
+import android.widget.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class PreferencesActivity extends AppCompatActivity {
@@ -48,6 +49,9 @@ public class PreferencesActivity extends AppCompatActivity {
                 LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.view_dev_info, null);
                 layout.findViewById(R.id.cheong_logo).setAnimation(android.view.animation.AnimationUtils.loadAnimation(getBaseContext(), R.anim.scale_anim));
                 layout.findViewById(R.id.cheong_text).setAnimation(android.view.animation.AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in_anim));
+                try {
+                    ((TextView) layout.findViewById(R.id.cheong_text)).setText("2128 조재희\n \n앱 버전 : v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+                } catch(PackageManager.NameNotFoundException e) {}
                 popup.setFocusable(true);
                 popup.setContentView(layout);
                 Point p = new Point();

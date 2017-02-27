@@ -19,7 +19,6 @@
         android:layout_weight="1"
         android:gravity="center|top"
         android:textColor="#000000"
-        android:textSize="28sp"
-        android:text="2128 조재희"/>
+        android:textSize="28sp"/>
     
 </LinearLayout>

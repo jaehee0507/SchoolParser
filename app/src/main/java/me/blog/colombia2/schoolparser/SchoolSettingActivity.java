@@ -133,7 +133,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
     }
     
     protected CardView getCardView(String name, HashMap<String, String> menus) {
-        CardView card = (CardView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.view_menu_card, null);
+        CardView card = (CardView) LayoutInflater.from(this).inflate(R.layout.view_menu_card, null);
         ((TextView) card.findViewById(R.id.title)).setText(name);
         LinearLayout layout = (LinearLayout) card.findViewById(R.id.menulayout);
 		SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);

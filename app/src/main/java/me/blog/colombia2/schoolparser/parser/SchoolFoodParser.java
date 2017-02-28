@@ -6,7 +6,7 @@ import me.blog.colombia2.schoolparser.utils.*;
 import org.hyunjun.school.*;
 
 public class SchoolFoodParser {
-    public static String getTable(int type) throws IOException {
+    public static String getTable(int type) {
         String result = "";
         
         School api = new School(School.Type.HIGH, School.Region.CHUNGBUK, "M100001915");

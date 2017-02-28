@@ -7,10 +7,19 @@ import android.support.v7.app.*;
 import android.support.v7.widget.*;
 import android.view.*;
 import android.widget.*;
+import com.rey.material.drawable.*;
+import com.rey.material.widget.*;
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.rey.material.widget.CheckBox;
 
 public class SchoolSettingActivity extends AppCompatActivity {
     protected Button bottomButton;
@@ -71,7 +80,11 @@ public class SchoolSettingActivity extends AppCompatActivity {
                 for(int i = 0; i < menulist.getChildCount(); i++) {
                     LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                     for(int j = 0; j < menulayout.getChildCount(); j++) {
-                        AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
+                        CompoundButton check;
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                            check = (CheckBox) menulayout.getChildAt(j);
+                        else
+                            check = (AppCompatCheckBox) menulayout.getChildAt(j);
                         if(check.isChecked()) {
                             checkedCount++;
                             menuArr.add((String) check.getTag());
@@ -93,6 +106,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
                     edit.commit();
                     
                     MainActivity.instance.finish();
+                    PreferencesActivity.instance.finish();
                     Intent i = new Intent(SchoolSettingActivity.this, MainActivity.class);
                     startActivity(i);
                     finish();
@@ -114,16 +128,26 @@ public class SchoolSettingActivity extends AppCompatActivity {
             for(int i = 0; i < menulist.getChildCount(); i++) {
                 LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                 for(int j = 0; j < menulayout.getChildCount(); j++) {
-                    AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
-                    check.setChecked(true);
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                        check.setChecked(true);
+                    } else {
+                        AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
+                        check.setChecked(true);
+                    }
                 }
             }
         } else if(item.getItemId() == R.id.menudeselect_all) {
             for(int i = 0; i < menulist.getChildCount(); i++) {
                 LinearLayout menulayout = (LinearLayout) menulist.getChildAt(i).findViewById(R.id.menulayout);
                 for(int j = 0; j < menulayout.getChildCount(); j++) {
-                    AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
-                    check.setChecked(false);
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        CheckBox check = (CheckBox) menulayout.getChildAt(j);
+                        check.setChecked(false);
+                    } else {
+                        AppCompatCheckBox check = (AppCompatCheckBox) menulayout.getChildAt(j);
+                        check.setChecked(false);
+                    }
                 }
             }
         } else if(item.getItemId() == android.R.id.home) {
@@ -139,12 +163,29 @@ public class SchoolSettingActivity extends AppCompatActivity {
 		SharedPreferences pref = getSharedPreferences("schoolData", MODE_PRIVATE);
 		ArrayList<String> menunames = new ArrayList<>(Arrays.asList(pref.getString("menunames", "").split(";")));
         for(String key : menus.keySet()) {
-            AppCompatCheckBox check = new AppCompatCheckBox(this);
-            check.setText(key);
-            check.setTag(menus.get(key));
-			if(menunames.contains(key))
-				check.setChecked(true);
-            layout.addView(check);
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                final CheckBox check = new CheckBox(this);
+                //Fucking off private filed via reflection...
+                try {
+                    Field field = CheckBoxDrawable.class.getDeclaredField("mAnimDuration");
+                    field.setAccessible(true);
+                    field.setInt(check.getButtonDrawable(), 200);
+                } catch(Exception e) {}
+                check.setText(key);
+                check.setGravity(Gravity.CENTER|Gravity.LEFT);
+                check.setTag(menus.get(key));
+			    if(menunames.contains(key))
+				    check.setCheckedImmediately(true);
+                layout.addView(check);
+            } else {
+                AppCompatCheckBox check = new AppCompatCheckBox(this);
+                check.setText(key);
+                check.setGravity(Gravity.CENTER|Gravity.LEFT);
+                check.setTag(menus.get(key));
+                if(menunames.contains(key))
+                    check.setChecked(true);
+                layout.addView(check);
+            }
         }
         
         return card;

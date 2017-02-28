@@ -15,11 +15,13 @@ import android.widget.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class PreferencesActivity extends AppCompatActivity {
-    SwitchCompat autoupdate;
-    SwitchCompat newvisible;
+    public static PreferencesActivity instance;
+    protected SwitchCompat autoupdate;
+    protected SwitchCompat newvisible;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 

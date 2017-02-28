@@ -103,8 +103,11 @@ public class SchoolFoodFragment extends Fragment {
                 publishProgress("2", lunch_);
                 String dinner_ = SchoolFoodParser.getTable(3);
                 publishProgress("3", dinner_);
-            } catch(IOException e) {
-
+            } catch(Exception e) {
+                publishProgress("1", "급식 정보가 없습니다");
+                publishProgress("2", "급식 정보가 없습니다");
+                publishProgress("3", "급식 정보가 없습니다");
+                ErrorDisplayer.showError(breakfast, "현재 급식을 불러올 수 없습니다");
             }
 
             return null;

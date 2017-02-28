@@ -178,6 +178,7 @@ public class ArticlePageFragment extends Fragment {
             } else if(result == 2) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(null);
+                ErrorDisplayer.showError(maincontent, "알 수 없는 오류가 발생했습니다");
             } else if(result == 3) {
                 webview.loadUrl(content);
                 maincontent.setVisibility(View.INVISIBLE);

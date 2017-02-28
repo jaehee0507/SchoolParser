@@ -13,10 +13,19 @@ import android.util.*;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
+import com.rey.material.drawable.*;
+import com.rey.material.widget.*;
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.parser.*;
 import me.blog.colombia2.schoolparser.utils.*;
+
+import android.support.design.widget.FloatingActionButton;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import com.rey.material.widget.CheckBox;
 
 public class AttachmentsActivity extends AppCompatActivity {
     protected HashMap<RelativeLayout, String> views;
@@ -53,7 +62,7 @@ public class AttachmentsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Set<RelativeLayout> keys = views.keySet();
                     for(RelativeLayout layout : keys) {
-                        final CheckBox checkbox = (CheckBox) layout.findViewById(0);
+                        final CompoundButton checkbox = (CompoundButton) layout.findViewById(0);
                         if(!checkbox.isChecked())
                             continue;
 
@@ -146,20 +155,39 @@ public class AttachmentsActivity extends AppCompatActivity {
         progress.setLayoutParams(params);
         layout.addView(progress);
 
-        AppCompatCheckBox checkbox = new AppCompatCheckBox(this);
-        checkbox.setId(0);
-        StateListDrawable states = new StateListDrawable();
+        final StateListDrawable states = new StateListDrawable();
         states.addState(new int[]{android.R.attr.state_pressed}, new ColorDrawable(Color.argb(20, 0, 0, 0)));
         states.addState(new int[]{android.R.attr.state_focused}, new ColorDrawable(Color.argb(0, 0, 0, 0)));
         states.addState(new int[]{}, new ColorDrawable(Color.argb(0, 0, 0, 0)));
-        checkbox.setBackgroundDrawable(states);
-        checkbox.setText(attach.getTitle());
-        checkbox.setGravity(Gravity.LEFT | Gravity.CENTER);
-        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
-                                                                   TypedValue.COMPLEX_UNIT_DIP,
-                                                                   60,
-                                                                   getResources().getDisplayMetrics())));
-        layout.addView(checkbox);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            CheckBox checkbox = new CheckBox(this);
+            try {
+                Field field = CheckBoxDrawable.class.getDeclaredField("mAnimDuration");
+                field.setAccessible(true);
+                field.setInt(checkbox.getButtonDrawable(), 200);
+            } catch(Exception e) {}
+            checkbox.setId(0);
+            checkbox.setBackgroundDrawable(states);
+            checkbox.setText(attach.getTitle());
+            checkbox.setGravity(Gravity.LEFT | Gravity.CENTER);
+            checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
+                                                                       TypedValue.COMPLEX_UNIT_DIP,
+                                                                       60,
+                                                                       getResources().getDisplayMetrics())));
+            layout.addView(checkbox);
+        } else {
+            AppCompatCheckBox checkbox = new AppCompatCheckBox(this);
+            checkbox.setId(0);
+            checkbox.setBackgroundDrawable(states);
+            checkbox.setText(attach.getTitle());
+            checkbox.setGravity(Gravity.LEFT | Gravity.CENTER);
+            checkbox.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(
+                                                                       TypedValue.COMPLEX_UNIT_DIP,
+                                                                       60,
+                                                                       getResources().getDisplayMetrics())));
+            layout.addView(checkbox);
+        }
+        
         return layout;
     }
 
@@ -174,8 +202,7 @@ public class AttachmentsActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.select_all) {
             Set<RelativeLayout> keys = views.keySet();
             for(RelativeLayout layout : keys) {
-                CheckBox checkbox = (CheckBox) layout.findViewById(0);
-                checkbox.setChecked(true);
+                ((CompoundButton) layout.findViewById(0)).setChecked(true);
             }
             return true;
         }

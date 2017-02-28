@@ -208,6 +208,15 @@ public class ListParser {
         return articleList;
     }
     
+    public ArrayList<ArticleData> search(String keyword) throws IOException {
+        doc = connection.data("search_field", "%C1%A6%B8%F1")
+                        .data("search_word", keyword).get();
+        ArrayList<ArticleData> result = getArticleList();
+        doc = connection.data("search_field", "")
+                        .data("search_word", "").get();
+        return result;
+    }
+    
     public ArrayList<PhotoData> getPhotoList() {
         ArrayList<PhotoData> articleList = new ArrayList<>();
         

@@ -32,4 +32,12 @@ public class MenuPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return fragmentTitleNames.get(position);
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        if(object instanceof Fragment)
+            return fragmentList.indexOf((Fragment) object);
+        
+        return super.getItemPosition(object);
+    }
 }

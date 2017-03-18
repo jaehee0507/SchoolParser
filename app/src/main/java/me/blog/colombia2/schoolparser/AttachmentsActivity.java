@@ -164,7 +164,7 @@ public class AttachmentsActivity extends AppCompatActivity {
             try {
                 Field field = CheckBoxDrawable.class.getDeclaredField("mAnimDuration");
                 field.setAccessible(true);
-                field.setInt(checkbox.getButtonDrawable(), 200);
+                field.setInt(checkbox.getButtonDrawable(), 150);
             } catch(Exception e) {}
             checkbox.setId(0);
             checkbox.setBackgroundDrawable(states);

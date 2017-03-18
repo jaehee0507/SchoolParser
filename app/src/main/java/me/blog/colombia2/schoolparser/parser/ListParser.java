@@ -1,13 +1,14 @@
 package me.blog.colombia2.schoolparser.parser;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import org.joda.time.*;
-import org.joda.time.format.*;
 
 public class ListParser {
     final private static int CONNECT_TIMEOUT = 10;
@@ -210,11 +211,14 @@ public class ListParser {
     
     public ArrayList<ArticleData> search(String keyword) throws IOException {
         doc = connection.data("search_field", "%C1%A6%B8%F1")
-                        .data("search_word", keyword).get();
+                        .data("search_word", URLEncoder.encode(keyword, "EUC-KR")).get();
         ArrayList<ArticleData> result = getArticleList();
+        return result;
+    }
+    
+    public void clearSearchPage() throws IOException {
         doc = connection.data("search_field", "")
                         .data("search_word", "").get();
-        return result;
     }
     
     public ArrayList<PhotoData> getPhotoList() {

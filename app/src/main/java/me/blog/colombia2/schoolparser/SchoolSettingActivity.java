@@ -169,7 +169,7 @@ public class SchoolSettingActivity extends AppCompatActivity {
                 try {
                     Field field = CheckBoxDrawable.class.getDeclaredField("mAnimDuration");
                     field.setAccessible(true);
-                    field.setInt(check.getButtonDrawable(), 200);
+                    field.setInt(check.getButtonDrawable(), 150);
                 } catch(Exception e) {}
                 check.setText(key);
                 check.setGravity(Gravity.CENTER|Gravity.LEFT);

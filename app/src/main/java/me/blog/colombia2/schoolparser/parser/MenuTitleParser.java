@@ -6,6 +6,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 import android.text.*;
+import me.blog.colombia2.schoolparser.utils.*;
 
 public class MenuTitleParser {
     private static Document doc = null;
@@ -24,6 +25,7 @@ public class MenuTitleParser {
                 Element a = menu.select("a").first();
                 String href = a.attr("href");
                 submenus.put(a.text(), href.substring(href.lastIndexOf("=")+1, href.length()));
+                
                 if(href.substring(href.lastIndexOf("=")+1, href.length()).equals("M001002002")) {
                     submenus.put("청심학사 게시판", "M001002002001");
                     submenus.put("청심학사 Q&A", "M001002002002");

@@ -36,15 +36,15 @@ public class ArticlePageFragment extends Fragment {
     public void setMenuId(String menuId) {
         this.menuId = menuId;
     }
-    
+
     public void setTab(TabLayout.Tab tab) {
         this.tab = tab;
     }
-    
+
     public TabLayout.Tab getTab() {
         return tab;
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -88,10 +88,15 @@ public class ArticlePageFragment extends Fragment {
 
         return layout;
     }
-    
+
     public void task() {
         ParserAsyncTask task = new ParserAsyncTask();
         task.execute(menuId);
+    }
+
+    public void search(String keyword) {
+        ParserAsyncTask task = new ParserAsyncTask();
+        task.execute(menuId, keyword);
     }
 
     class ParserAsyncTask extends AsyncTask<String, String, Integer> {
@@ -115,52 +120,80 @@ public class ArticlePageFragment extends Fragment {
 
         @Override
         protected Integer doInBackground(String... params) {
-            try {
-                parser.setMenuId(params[0])
-                      .setCurrentPage(1).connect().get();
-                if(parser.getMenuId().equals("M001002013")) {
-                    photoList = parser.getPhotoList();
-                    adapter = new PhotoAdapter(ArticlePageFragment.this, photoList);
-                    if(parser.getMaxPage() > 1) {
-                        photoList.add(null);
-                        adapter.notifyItemChanged(photoList.size());
+            if(params.length == 1) {
+                try {
+                    parser.setMenuId(params[0])
+                        .setCurrentPage(1).connect().get();
+                    if(parser.getMenuId().equals("M001002013")) {
+                        photoList = parser.getPhotoList();
+                        adapter = new PhotoAdapter(ArticlePageFragment.this, photoList);
+                        if(parser.getMaxPage() > 1) {
+                            photoList.add(null);
+                            adapter.notifyItemChanged(photoList.size());
+                        }
+
+                        return 4;
+                    }
+                    if(parser.isNonArticleForm()) {
+                        content = parser.getNonArticleContent();
+                        return 3;
+                    }
+                    if(parser.isMonthListForm()) {
+                        int year = 0, month = 0;
+                        if(((String) tab.getTag()).equals("")) {
+                            year = Calendar.getInstance().get(Calendar.YEAR);
+                            month = Calendar.getInstance().getTime().getMonth();
+                            tab.setTag(year + ";" + month);
+                        } else {
+                            year = Integer.parseInt(((String) tab.getTag()).split(";")[0]);
+                            month = Integer.parseInt(((String) tab.getTag()).split(";")[1]);
+                        }
+
+                        scheduleList = parser.getMonthListContent(year, month);
+                        adapter = new ScheduleAdapter(ArticlePageFragment.this, scheduleList);
+                        return 4;
                     }
 
-                    return 4;
-                }
-                if(parser.isNonArticleForm()) {
-                    content = parser.getNonArticleContent();
-                    return 3;
-                }
-				if(parser.isMonthListForm()) {
-                    int year = 0, month = 0;
-                    if(((String) tab.getTag()).equals("")) {
-                        year = Calendar.getInstance().get(Calendar.YEAR);
-                        month = Calendar.getInstance().getTime().getMonth();
-                        tab.setTag(year+";"+month);
-                    } else {
-                        year = Integer.parseInt(((String) tab.getTag()).split(";")[0]);
-                        month = Integer.parseInt(((String) tab.getTag()).split(";")[1]);
+                    articleList = parser.getArticleList();
+                    if(articleList.size() == 0) {
+                        return 0;
                     }
-                    
-					scheduleList = parser.getMonthListContent(year, month);
-                    adapter = new ScheduleAdapter(ArticlePageFragment.this, scheduleList);
-					return 4;
-				}
-                
-                articleList = parser.getArticleList();
-                if(articleList.size() == 0) {
-                    return 0;
+                    adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
+                    if(parser.getMaxPage() > 1) {
+                        articleList.add(null);
+                        adapter.notifyItemInserted(articleList.size());
+                    }
+                } catch(IOException e) {
+                    return 1;
+                } catch(Exception e) {
+                    Toast.makeText(getContext(), e + "", Toast.LENGTH_SHORT).show();
+                    return 2;
                 }
-                adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
-                if(parser.getMaxPage() > 1) {
-                    articleList.add(null);
-                    adapter.notifyItemInserted(articleList.size());
+
+                return 0;
+            } else if(params.length == 2) {
+                try {
+                    parser.setMenuId(params[0])
+                          .setCurrentPage(1).connect();
+                    articleList = parser.search(params[1]);
+                    if(articleList.size() == 0) {
+                        return 0;
+                    }
+                    for(ArticleData e : articleList) {
+                        Toast.makeText(getContext(), e.getTitle(), Toast.LENGTH_SHORT).show();
+                    }
+                    adapter = new ArticleAdapter(ArticlePageFragment.this, articleList);
+                    if(parser.getMaxPage() > 1) {
+                        articleList.add(null);
+                        adapter.notifyItemInserted(articleList.size());
+                    }
+                } catch(IOException e) {
+                    return 1;
+                } catch(Exception e) {
+                    Toast.makeText(getContext(), e + "", Toast.LENGTH_SHORT).show();
+                    return 2;
                 }
-            } catch(IOException e) {
-                return 1;
-            } catch(Exception e) {
-                return 2;
+                return 0;
             }
 
             return 0;

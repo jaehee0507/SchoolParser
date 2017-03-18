@@ -1,14 +1,12 @@
 package me.blog.colombia2.schoolparser;
 
 import android.content.*;
-import android.graphics.*;
-import android.graphics.drawable.*;
 import android.net.*;
 import android.os.*;
 import android.support.design.widget.*;
+import android.support.v4.app.*;
 import android.support.v4.view.*;
 import android.support.v7.app.*;
-import android.util.*;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
@@ -23,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     protected ArrayList<String> menuNameArr;
     protected Spinner menuSpinner;
     protected FloatingActionButton share;
+
+    private Fragment currentFragment;
 
     public static MainActivity instance;
 
@@ -72,19 +72,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!((SchoolFoodFragment) adapter.getItem(0)).isLoading()) {
-                    Intent i = new Intent();
-                    i.setAction(Intent.ACTION_SEND);
-                    i.setType("text/plain");
-                    i.putExtra(Intent.EXTRA_TEXT, ((SchoolFoodFragment) adapter.getItem(0)).getMenus());
-                    startActivity(Intent.createChooser(i, "공유하기"));
-                } else {
-                    Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
+                @Override
+                public void onClick(View v) {
+                    if(currentFragment instanceof SchoolFoodFragment) {
+                        if(!((SchoolFoodFragment) adapter.getItem(0)).isLoading()) {
+                            Intent i = new Intent();
+                            i.setAction(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.putExtra(Intent.EXTRA_TEXT, ((SchoolFoodFragment) adapter.getItem(0)).getMenus());
+                            startActivity(Intent.createChooser(i, "공유하기"));
+                        } else {
+                            Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    if(adapter.getItemPosition(currentFragment) > 0) {
+                        ArticlePageFragment fragment = (ArticlePageFragment) currentFragment;
+                        fragment.search("청원");
+                    }
                 }
-            }
-        });
+            });
     }
 
     @Override
@@ -125,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SchoolFoodFragment(), "급식 정보");
+        SchoolFoodFragment food = new SchoolFoodFragment();
+        adapter.addFragment(food, "급식 정보");
+        currentFragment = food;
         for(int i = 0; i < menuArr.size(); i++) {
             ArticlePageFragment frag = new ArticlePageFragment();
             frag.setMenuId(menuArr.get(i));
@@ -139,11 +148,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     viewPager.setCurrentItem(tab.getPosition());
+                    currentFragment = adapter.getItem(tab.getPosition());
                     menuSpinner.setSelection(tab.getPosition());
                     if(tab.getPosition() == 0)
                         share.show();
                     else
-                        share.hide();
+                        share.hide(); 
                 }
 
                 @Override
@@ -165,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemSelected(AdapterView v, View a, int p, long l) {
                     viewPager.setCurrentItem(p);
+                    currentFragment = adapter.getItem(p);
                     if(p == 0)
                         share.show();
                     else

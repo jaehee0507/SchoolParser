@@ -6,6 +6,7 @@ import android.support.design.widget.*;
 import android.support.v4.app.*;
 import android.support.v4.widget.*;
 import android.support.v7.widget.*;
+import android.util.Log;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
@@ -166,7 +167,7 @@ public class ArticlePageFragment extends Fragment {
                 } catch(IOException e) {
                     return 1;
                 } catch(Exception e) {
-                    Toast.makeText(getContext(), e + "", Toast.LENGTH_SHORT).show();
+                    Log.e("affocheong", e.toString());
                     return 2;
                 }
 
@@ -190,7 +191,7 @@ public class ArticlePageFragment extends Fragment {
                 } catch(IOException e) {
                     return 1;
                 } catch(Exception e) {
-                    Toast.makeText(getContext(), e + "", Toast.LENGTH_SHORT).show();
+                    Log.e("affocheong", e.toString());
                     return 2;
                 }
                 return 0;
@@ -211,7 +212,7 @@ public class ArticlePageFragment extends Fragment {
             } else if(result == 2) {
                 refresh.setRefreshing(false);
                 articles.setAdapter(null);
-                ErrorDisplayer.showError(maincontent, "알 수 없는 오류가 발생했습니다");
+                ErrorDisplayer.showError(maincontent, "'"+tab.getText()+"'에서 알 수 없는 오류가 발생했습니다");
             } else if(result == 3) {
                 webview.loadUrl(content);
                 maincontent.setVisibility(View.INVISIBLE);

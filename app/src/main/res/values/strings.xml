@@ -17,5 +17,8 @@
     <string name="export">다른 브라우저로 보기</string>
     <string name="settings">설정</string>
     <string name="appinfo">앱 정보</string>
+    <string name="refresh">새로고침</string>
+    <string name="title_activity_write_article">게시글 작성</string>
+    <string name="permission_denied">이 권한을 거부할 경우, 파일을 다운로드 할 수 없습니다.\n\n설정->권한에서 이 권한을 사용함으로 설정해주세요.</string>
 
 </resources>

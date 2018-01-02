@@ -6,8 +6,8 @@ import android.view.*;
 import android.widget.*;
 
 public class LoadMoreHolder extends RecyclerView.ViewHolder {
-    protected FloatingActionButton loadMore;
-    protected ProgressBar loading;
+    public FloatingActionButton loadMore;
+    public ProgressBar loading;
     
     public LoadMoreHolder(View itemView) {
         super(itemView);

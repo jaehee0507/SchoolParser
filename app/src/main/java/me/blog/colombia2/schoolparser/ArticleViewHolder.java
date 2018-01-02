@@ -7,16 +7,16 @@ import android.widget.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class ArticleViewHolder extends RecyclerView.ViewHolder {
-    protected TextView titleText;
-    protected TextView dateText;
-    protected LinearLayout content;
-    protected ProgressBar loading;
-    protected TextView content_text;
-    protected Button content_readall;
-    protected Button content_attachments;
-    protected Button content_replies;
-    protected CardView card;
-    protected boolean opened;
+    public TextView titleText;
+    public TextView dateText;
+    public LinearLayout content;
+    public ProgressBar loading;
+    public TextView content_text;
+    public Button content_readall;
+    public Button content_attachments;
+    public Button content_replies;
+    public CardView card;
+    public boolean opened;
     
     public ArticleViewHolder(View itemView) {
         super(itemView);

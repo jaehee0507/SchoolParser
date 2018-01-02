@@ -1,32 +1,20 @@
 package me.blog.colombia2.schoolparser.parser;
 
-import java.io.*;
-import java.util.*;
 import me.blog.colombia2.schoolparser.utils.*;
-import org.hyunjun.school.*;
 
 public class SchoolFoodParser {
     public static String getTable(int type) {
         String result = "";
-        
-        School api = new School(School.Type.HIGH, School.Region.CHUNGBUK, "M100001915");
+
+        String[] resultArr = MealLibrary.getMealNew("cbe.go.kr", "M100001915", "4", "04", Integer.toString(type, 10), String.format("%d", DateInstance.YEAR), String.format("%02d", DateInstance.MONTH), String.format("%02d", DateInstance.DATE));
 		try {
-			ArrayList<SchoolMenu> list = new ArrayList<>(api.getMonthlyMenu(DateInstance.YEAR, DateInstance.MONTH));
-			switch(type) {
-				case 1:
-					result = list.get(DateInstance.DATE-1).breakfast;
-					break;
-				case 2:
-					result = list.get(DateInstance.DATE-1).lunch;
-					break;
-				case 3:
-					result = list.get(DateInstance.DATE-1).dinner;
-					break;
-			}
-		} catch(SchoolException e) {
+            result = resultArr[DateInstance.DAY];
+		} catch(Exception e) {
 			result = "급식 정보가 없습니다";
 		}
-		
-        return result.replaceAll("[0-9\\.]", "").replace("급식이 없습니다", "급식 정보가 없습니다");
+
+		if(result.replaceAll("\\p{Z}","").equals(""))
+		    result = "급식 정보가 없습니다";
+        return result.replaceAll("[0-9\\.]", "");
     }
 }

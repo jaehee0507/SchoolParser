@@ -2,6 +2,7 @@ package me.blog.colombia2.schoolparser;
 
 import android.content.*;
 import android.content.pm.*;
+import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.os.*;
@@ -12,12 +13,16 @@ import android.text.*;
 import android.text.style.*;
 import android.view.*;
 import android.widget.*;
+
+import com.kyleduo.blurpopupwindow.library.BlurPopupWindow;
+
 import me.blog.colombia2.schoolparser.utils.*;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static PreferencesActivity instance;
     protected SwitchCompat autoupdate;
     protected SwitchCompat newvisible;
+    protected SwitchCompat mobiledata;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +52,21 @@ public class PreferencesActivity extends AppCompatActivity {
         appinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupWindow popup = new PopupWindow(getBaseContext());
-                LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.view_dev_info, null);
+                BlurPopupWindow window = new BlurPopupWindow.Builder(PreferencesActivity.this)
+                        .setContentView(R.layout.view_dev_info)
+                        .setGravity(Gravity.CENTER)
+                        .setScaleRatio(0.2f)
+                        .setBlurRadius(10)
+                        .build();
+                window.show();
+                View layout = window.getContentView();
                 layout.findViewById(R.id.cheong_logo).setAnimation(android.view.animation.AnimationUtils.loadAnimation(getBaseContext(), R.anim.scale_anim));
                 layout.findViewById(R.id.cheong_text).setAnimation(android.view.animation.AnimationUtils.loadAnimation(getBaseContext(), R.anim.fade_in_anim));
                 try {
-                    ((TextView) layout.findViewById(R.id.cheong_text)).setText("2128 조재희\n \n앱 버전 : v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+                    ((TextView) layout.findViewById(R.id.cheong_text)).setText("청원고 10기 조재희\n \n앱 버전 : v" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
                 } catch(PackageManager.NameNotFoundException e) {}
+                /*PopupWindow popup = new PopupWindow(getBaseContext());
+
                 popup.setFocusable(true);
                 popup.setContentView(layout);
                 Point p = new Point();
@@ -62,7 +75,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 popup.setHeight(p.y);
                 popup.setBackgroundDrawable(new BitmapDrawable(ImageEditor.blur(getBaseContext(), ImageEditor.captureScreen(findViewById(R.id.main_layout).getRootView()), 25.0f)));
                 popup.setAnimationStyle(R.style.PopupAnim);
-                popup.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+                popup.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);*/
             }
         });
         
@@ -90,6 +103,17 @@ public class PreferencesActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton v, boolean checked) {
                 SharedPreferences.Editor edit = pref.edit();
                 edit.putBoolean("newVisible", checked);
+                edit.commit();
+            }
+        });
+
+        mobiledata = (SwitchCompat) findViewById(R.id.mobiledata);
+        mobiledata.setChecked(!pref.getBoolean("cautionIgnore", false));
+        mobiledata.setOnCheckedChangeListener(new SwitchCompat.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton v, boolean checked) {
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putBoolean("cautionIgnore", !checked);
                 edit.commit();
             }
         });

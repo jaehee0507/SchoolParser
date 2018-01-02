@@ -10,6 +10,8 @@ import android.support.v7.app.*;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
+
+import me.blog.colombia2.schoolparser.sql.WriteDataActivity;
 import me.blog.colombia2.schoolparser.tab.*;
 import me.blog.colombia2.schoolparser.utils.*;
 
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected Spinner menuSpinner;
     protected FloatingActionButton share;
 
-    private Fragment currentFragment;
+    public Fragment currentFragment;
 
     public static MainActivity instance;
 
@@ -84,11 +86,10 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Snackbar.make(v, "아직 급식 정보를 불러오는 중입니다.", Snackbar.LENGTH_SHORT).show();
                         }
-                    }
-
-                    if(adapter.getItemPosition(currentFragment) > 0) {
-                        ArticlePageFragment fragment = (ArticlePageFragment) currentFragment;
-                        fragment.search("청원");
+                    } else if(currentFragment instanceof SQLBoardFragment) {
+                        Intent i = new Intent(MainActivity.this, WriteDataActivity.class);
+                        i.putExtra("mode", 0);
+                        startActivity(i);
                     }
                 }
             });
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<String> nameArr = new ArrayList<>();
         nameArr.add("급식 정보");
+        nameArr.add("자체게시판");
         nameArr.addAll(menuNameArr);
         SpinnerAdapter category = new SpinnerAdapter(this, android.R.layout.simple_spinner_dropdown_item, nameArr);
         menuSpinner.setAdapter(category);
@@ -134,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MenuPagerAdapter(getSupportFragmentManager());
         SchoolFoodFragment food = new SchoolFoodFragment();
         adapter.addFragment(food, "급식 정보");
+        SQLBoardFragment sqlboard = new SQLBoardFragment();
+        adapter.addFragment(sqlboard, "자체게시판");
         currentFragment = food;
         for(int i = 0; i < menuArr.size(); i++) {
             ArticlePageFragment frag = new ArticlePageFragment();
@@ -150,9 +154,13 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(tab.getPosition());
                     currentFragment = adapter.getItem(tab.getPosition());
                     menuSpinner.setSelection(tab.getPosition());
-                    if(tab.getPosition() == 0)
+                    if(tab.getPosition() < 2) {
                         share.show();
-                    else
+                        if(tab.getPosition() == 1)
+                            share.setImageResource(R.drawable.ic_create_white_24dp);
+                        else if(tab.getPosition() == 0)
+                            share.setImageResource(R.drawable.ic_share_white_24dp);
+                    } else
                         share.hide(); 
                 }
 
@@ -163,12 +171,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onTabReselected(TabLayout.Tab tab) {}
             });
 
-        //i = 0 : SchoolFoodFragment
-        for(int i = 1; i < adapter.getCount(); i++) {
-            ArticlePageFragment frag = (ArticlePageFragment) adapter.getItem(i);
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setTag("");
-            frag.setTab(tab);
+        for(int i = 0; i < adapter.getCount(); i++) {
+            if(adapter.getItem(i) instanceof ArticlePageFragment) {
+                ArticlePageFragment frag = (ArticlePageFragment) adapter.getItem(i);
+                TabLayout.Tab tab = tabLayout.getTabAt(i);
+                tab.setTag("");
+                frag.setTab(tab);
+            }
         }
 
         menuSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -176,9 +185,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView v, View a, int p, long l) {
                     viewPager.setCurrentItem(p);
                     currentFragment = adapter.getItem(p);
-                    if(p == 0)
+                    if(p < 2) {
                         share.show();
-                    else
+                        if(p == 1)
+                            share.setImageResource(R.drawable.ic_create_white_24dp);
+                        else if(p == 0)
+                            share.setImageResource(R.drawable.ic_share_white_24dp);
+                    } else
                         share.hide();
                 }
 
@@ -200,5 +213,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    public void taskCurrent() {
+        if(currentFragment instanceof SQLBoardFragment) {
+            ((SQLBoardFragment) currentFragment).task();
+        }
     }
 }

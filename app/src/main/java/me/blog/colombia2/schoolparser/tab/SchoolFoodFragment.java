@@ -5,7 +5,6 @@ import android.support.v4.app.*;
 import android.view.*;
 import android.widget.*;
 import com.wdullaer.materialdatetimepicker.date.*;
-import java.io.*;
 import java.util.*;
 import me.blog.colombia2.schoolparser.*;
 import me.blog.colombia2.schoolparser.parser.*;

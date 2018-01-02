@@ -106,7 +106,8 @@ public class SchoolSettingActivity extends AppCompatActivity {
                     edit.commit();
                     
                     MainActivity.instance.finish();
-                    PreferencesActivity.instance.finish();
+                    if(PreferencesActivity.instance != null)
+                        PreferencesActivity.instance.finish();
                     Intent i = new Intent(SchoolSettingActivity.this, MainActivity.class);
                     startActivity(i);
                     finish();

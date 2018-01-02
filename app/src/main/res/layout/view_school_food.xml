@@ -17,7 +17,7 @@
             android:layout_height="fill_parent"
 			android:gravity="center|top"
             android:orientation="vertical">
-			
+
 			<TextView
 				android:id="@+id/dateselect"
 				android:layout_width="wrap_content"

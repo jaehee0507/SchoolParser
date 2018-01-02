@@ -1,20 +1,23 @@
 package me.blog.colombia2.schoolparser;
 
+import android.Manifest;
 import android.app.*;
 import android.content.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
 import android.net.*;
 import android.os.*;
-import android.support.design.widget.*;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.*;
 import android.support.v7.widget.*;
 import android.util.*;
 import android.view.*;
 import android.webkit.*;
 import android.widget.*;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.rey.material.drawable.*;
-import com.rey.material.widget.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -60,84 +63,105 @@ public class AttachmentsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Set<RelativeLayout> keys = views.keySet();
-                    for(RelativeLayout layout : keys) {
-                        final CompoundButton checkbox = (CompoundButton) layout.findViewById(0);
-                        if(!checkbox.isChecked())
-                            continue;
+                    PermissionListener listener = new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted() {
+                            Set<RelativeLayout> keys = views.keySet();
+                            for(RelativeLayout layout : keys) {
+                                final CompoundButton checkbox = (CompoundButton) layout.findViewById(0);
+                                if(!checkbox.isChecked())
+                                    continue;
 
-                        final View progress = layout.findViewById(1);
-                        final String value = views.get(layout);
-                        try {
-                            FileDownloader downloader = new FileDownloader(value, "/sdcard/Download/" + checkbox.getText());
-                            downloader.setFileDownloadListener(new FileDownloader.FileDownloadListener() {
-                                    private int fileSize;
+                                final View progress = layout.findViewById(1);
+                                final String value = views.get(layout);
+                                try {
+                                    FileDownloader downloader = new FileDownloader(value, Environment.getExternalStorageDirectory().getPath()+"/Download/" + checkbox.getText());
+                                    downloader.setFileDownloadListener(new FileDownloader.FileDownloadListener() {
+                                        private int fileSize;
 
-                                    @Override
-                                    public void onDownloadStart(int fileSize) {
-                                        this.fileSize = fileSize;
-                                    }
+                                        @Override
+                                        public void onDownloadStart(int fileSize) {
+                                            this.fileSize = fileSize;
+                                        }
 
-                                    @Override
-                                    public void onDownloading(int currentBytes) {
-                                        final float prog = (float) currentBytes / (float) fileSize;
-                                        runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void onDownloading(int currentBytes) {
+                                            final float prog = (float) currentBytes / (float) fileSize;
+                                            runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (prog * checkbox.getWidth()), (int) TypedValue.applyDimension(
-                                                                                                                             TypedValue.COMPLEX_UNIT_DIP,
-                                                                                                                             3.2f,
-                                                                                                                             getResources().getDisplayMetrics()));
+                                                            TypedValue.COMPLEX_UNIT_DIP,
+                                                            3.2f,
+                                                            getResources().getDisplayMetrics()));
                                                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                                     progress.setLayoutParams(params);
                                                 }
                                             });
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onDownloadError(Exception err) {
-                                        
-                                    }
+                                        @Override
+                                        public void onDownloadError(Exception err) {
 
-                                    @Override
-                                    public void onDownloadComplete(final File result) {
-                                        runOnUiThread(new Runnable() {
+                                        }
+
+                                        @Override
+                                        public void onDownloadComplete(final File result) {
+                                            runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, (int) TypedValue.applyDimension(
-                                                                                                                             TypedValue.COMPLEX_UNIT_DIP,
-                                                                                                                             3.2f,
-                                                                                                                             getResources().getDisplayMetrics()));
+                                                            TypedValue.COMPLEX_UNIT_DIP,
+                                                            3.2f,
+                                                            getResources().getDisplayMetrics()));
                                                     params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                                     progress.setLayoutParams(params);
+
 
                                                     NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                                     Intent toLaunch = new Intent();
                                                     toLaunch.setAction(Intent.ACTION_VIEW);
-                                                    toLaunch.setDataAndType(Uri.fromFile(result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                                        toLaunch.setDataAndType(Uri.fromFile(result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                                    } else {
+                                                        toLaunch.setDataAndType(FileProvider.getUriForFile(AttachmentsActivity.this, getApplicationContext().getPackageName() + ".provider", result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                                    }
                                                     PendingIntent pendingIntent = PendingIntent.getActivity(AttachmentsActivity.this, 0, toLaunch, 0);
                                                     Notification.Builder builder = new Notification.Builder(AttachmentsActivity.this);
 
                                                     builder.setAutoCancel(true);
-                                                    builder.setContentTitle(result.getName());               
+                                                    builder.setContentTitle(result.getName());
                                                     builder.setContentText("눌러서 열기");
                                                     builder.setSmallIcon(R.drawable.ic_file_download_white_24dp);
                                                     builder.setContentIntent(pendingIntent);
                                                     builder.build();
 
-                                                    Notification myNotication = builder.getNotification();
-                                                    manager.notify((int) System.currentTimeMillis(), myNotication);
+                                                    Notification myNotification = builder.getNotification();
+                                                    manager.notify((int) System.currentTimeMillis(), myNotification);
 
                                                     Toast.makeText(AttachmentsActivity.this, "/sdcard/Download/" + checkbox.getText() + "에 다운로드됨", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
-                                    }
-                                });
-                            downloader.start();
-                        } catch(Exception e) {
+                                        }
+                                    });
+                                    downloader.start();
+                                } catch(Exception e) {
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
 
                         }
-                    }
+                    };
+                    TedPermission.with(AttachmentsActivity.this)
+                            .setPermissionListener(listener)
+                            .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            .setDeniedMessage(R.string.permission_denied)
+                            .check();
+
                 }
             });
     }

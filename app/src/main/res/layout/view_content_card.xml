@@ -9,6 +9,7 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="2dp">
     
     <LinearLayout

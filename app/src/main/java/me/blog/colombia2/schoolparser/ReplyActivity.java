@@ -64,7 +64,7 @@ public class ReplyActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             if(result == 0) {
                 for(ReplyData reply : replies) {
-                    View card = LayoutInflater.from(getApplicationContext()).inflate(R.layout.view_reply_form, null);
+                    View card = LayoutInflater.from(ReplyActivity.this).inflate(R.layout.view_reply_form, null);
                     TextView nickname = (TextView) card.findViewById(R.id.nickname);
                     TextView content = (TextView) card.findViewById(R.id.content);
                     nickname.setText(reply.getNickname());

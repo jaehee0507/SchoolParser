@@ -26,8 +26,8 @@ android {
         applicationId "me.blog.colombia2.schoolparser"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 23
-        versionName "0.0.5beta"
+        versionCode 25
+        versionName "0.0.7beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -54,7 +54,6 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'gun0912.ted:tedpermission:2.1.0'
     compile 'com.kyleduo.blurpopupwindow:blurpopupwindow:1.0.8'
-    compile group: 'net.htmlparser.jericho', name: 'jericho-html', version: '3.3'
     compile('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude module: 'junit'
     }

@@ -9,5 +9,6 @@
 /captures
 .externalNativeBuild
 /library
+/gradle
 *.apk
 *.jks

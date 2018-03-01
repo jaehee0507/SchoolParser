@@ -54,19 +54,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.loading.setVisibility(View.VISIBLE);
             holder.content_text.setText("");
             holder.opened = false;
-                
-            /*//holder.reddot.setTransformationMethod(null);
-            SpannableString str = new SpannableString("jjh");
-            Resources resources = fragment.getContext().getResources();
-            Drawable d = resources.getDrawable(R.drawable.reddot);
-            d.setBounds(0, 0, holder.reddot.getLineHeight(), holder.reddot.getLineHeight());
-            ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
-            str.setSpan(span, 0, 1, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
-            holder.reddot.setText(str);
-            if(article.isNew())
-                holder.reddot.setVisibility(View.VISIBLE);
-            else
-                holder.reddot.setVisibility(View.GONE);*/
+
             if(article.isNew() && fragment.getContext().getSharedPreferences("appData", Context.MODE_PRIVATE).getBoolean("newVisible", true)) {
                 SpannableString text = new SpannableString("JJH | "+article.getDate()+" | "+article.getWriter()+" | "+article.getVisitors());
                 Drawable d = holder.card.getContext().getResources().getDrawable(R.drawable.newicon);

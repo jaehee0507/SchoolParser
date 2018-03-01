@@ -121,10 +121,17 @@ public class AttachmentsActivity extends AppCompatActivity {
                                                     NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                                     Intent toLaunch = new Intent();
                                                     toLaunch.setAction(Intent.ACTION_VIEW);
+                                                    final String type = result.getName().substring(result.getName().lastIndexOf("."), result.getName().length());
                                                     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                                                        toLaunch.setDataAndType(Uri.fromFile(result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                                        if(type.equals("hwp"))
+                                                            toLaunch.setDataAndType(Uri.fromFile(result), "application/hwp");
+                                                        else
+                                                            toLaunch.setDataAndType(Uri.fromFile(result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
                                                     } else {
-                                                        toLaunch.setDataAndType(FileProvider.getUriForFile(AttachmentsActivity.this, getApplicationContext().getPackageName() + ".provider", result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
+                                                        if(type.equals("hwp"))
+                                                            toLaunch.setDataAndType(FileProvider.getUriForFile(AttachmentsActivity.this, getApplicationContext().getPackageName() + ".provider", result), "application/hwp");
+                                                        else
+                                                            toLaunch.setDataAndType(FileProvider.getUriForFile(AttachmentsActivity.this, getApplicationContext().getPackageName() + ".provider", result), MimeTypeMap.getSingleton().getMimeTypeFromExtension(result.getName().substring(result.getName().lastIndexOf("."), result.getName().length())));
                                                     }
                                                     PendingIntent pendingIntent = PendingIntent.getActivity(AttachmentsActivity.this, 0, toLaunch, 0);
                                                     Notification.Builder builder = new Notification.Builder(AttachmentsActivity.this);

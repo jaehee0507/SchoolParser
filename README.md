@@ -5,12 +5,10 @@
 - [Jsoup](http://jsoup.org/)
 - [MaterialRippleLayout](https://github.com/balysv/material-ripple)
 - [MaterialDateTimePicker](https://github.com/wdullaer/MaterialDateTimePicker)
-- [MealLibrary](https://bitbucket.org/whdghks913/wondanghighschool/src/c8c07e419d11171b435755e59c17360f0cc45dd8/app/src/main/java/toast/library/meal/?at=master)
 - [webview-in-coordinatorlayout](https://github.com/takahirom/webview-in-coordinatorlayout)
 - [Joda-Time](https://www.joda.org/joda-time)
 - [MaterialLibrary](https://github.com/rey5137/material)
 - [TedPermission](https://github.com/ParkSangGwon/TedPermission)
-- [Jericho Parser](http://jericho.htmlparser.net/docs/index.html)
 - [BlurPopupWindow](https://github.com/kyleduo/BlurPopupWindow)
 
 
